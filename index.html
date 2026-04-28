@@ -92,6 +92,7 @@
         <h2 style="font-size: 1.2rem; margin-bottom: 15px;">Mulai Petualanganmu!</h2>
         <input type="text" id="studentName" placeholder="Masukkan Nama">
         <input type="email" id="studentEmail" placeholder="Masukkan Email">
+        <input type="text" id="idSekolah" placeholder="Masukkan Nama Sekolah">
         
         <label for="classSelect">Pilih Kelas:</label>
         <select id="classSelect">
@@ -105,20 +106,24 @@
 
     <div id="material-section" class="card hidden">
         <h2>Halo, <span id="displayName"></span>! 👋</h2>
-        <p style="margin-bottom: 20px;">Silahkan pilih materi belajarmu:</p>
-        
-        <div class="level-box unlocked" onclick="goToComparative()">
-            <h3>🔓 Level A: Comparative</h3>
-            <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
-        </div>
+<p style="margin-bottom: 20px;">Silakan pilih materi belajarmu:</p>
 
-        <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
-    <h3>🔒 Level B: Superlative</h3>
-    <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
-</div>
-        
-        <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; text-decoration: underline; margin-top: 10px;">Keluar / Ganti Nama</button>
+<div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
+    <div class="level-box locked">Chapter 1 | I Can Speak Five Languages</div>
+    <div class="level-box locked">Chapter 2 | I Play Golf on Weekends</div>
+    <div class="level-box locked">Chapter 3 | What are You Doing?</div>
+    <div class="level-box locked">Chapter 4 | We Went Camping Last Week</div>
+    <div class="level-box locked">Chapter 5 | What were They Doing?</div>
+    <div class="level-box locked">Chapter 6 | Let Me Tell You My Story</div>
+    
+    <div class="level-box unlocked" onclick="goToComparative()" style="border-left: 8px solid #3498db;">
+        Chapter 7 | I'm Taller than You (Comparative)
     </div>
+    
+    <div class="level-box locked">Chapter 8 | In a Faraway Kingdom</div>
+</div>
+
+<button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; text-decoration: underline; margin-top: 20px;">Keluar / Ganti Nama</button>
 
     <div id="comparative-page" class="card hidden">
             <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
@@ -322,8 +327,10 @@ window.onload = function() {
 function startMission() {
     const name = document.getElementById('studentName').value;
     const email = document.getElementById('studentEmail').value;
-    if (name.trim() !== "" && email.trim() !== "") {
+    const sekolah = document.getElementById('idSekolah').value;
+    if (name.trim() !== "" && email.trim() !== "" && sekolah.trim() !== "") {
         localStorage.setItem('studentName', name); 
+        localStorage.setItem('studentSekolah', sekolah);
         showMaterialPage(name);
     } else {
         alert("Mohon isi Nama dan Email terlebih dahulu ya!");
