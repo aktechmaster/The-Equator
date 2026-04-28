@@ -112,7 +112,7 @@
             <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
         </div>
 
-        <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 60!')">
+        <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
     <h3>🔒 Level B: Superlative</h3>
     <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
 </div>
@@ -248,13 +248,14 @@
     </div>
 
     <div id="result-page" class="card hidden" style="text-align: center;">
-        <h2 style="color: var(--primary-color);">MISI SELESAI!</h2>
-        <div style="font-size: 80px; margin: 20px 0;">🏆</div>
-        <div id="final-score" style="font-size: 4rem; font-weight: bold; color: var(--primary-color);">0</div>
-        <div id="rank-title" style="font-size: 1.5rem; font-weight: bold; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: white;"></div>
-        <p id="rank-desc" style="color: #7f8c8d; margin-bottom: 30px;"></p>
-        <button class="btn-primary" onclick="location.reload()">Ulangi Petualangan</button>
-    </div>
+    <h2 style="color: var(--primary-color);">MISI SELESAI!</h2>
+    <div style="font-size: 80px; margin: 20px 0;">🏆</div>
+    <div id="final-score" style="font-size: 4rem; font-weight: bold; color: var(--primary-color);">0</div>
+    <div id="rank-title" style="font-size: 1.5rem; font-weight: bold; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: white;"></div>
+    <p id="rank-desc" style="color: #7f8c8d; margin-bottom: 30px;"></p>
+    
+    <button id="finish-btn" class="btn-primary" onclick="location.reload()">Ulangi Petualangan</button>
+</div>
 
 </div>
 
@@ -482,7 +483,6 @@ function submitScrollQuiz() {
         return;
     }
 
-    // Hapus data kuis dari localStorage karena sudah selesai
     markExamAsFinished();
     localStorage.removeItem('savedAnswers');
 
@@ -491,16 +491,32 @@ function submitScrollQuiz() {
         if (userAnswers[index] === q.a) finalScore += 10; 
     });
 
-    // --- LOGIKA UNLOCK LEVEL B (POIN 1) ---
-    // Jika skor minimal 70, simpan status unlock ke localStorage
+    // AMBIL ELEMEN TOMBOL
+    const finishBtn = document.getElementById('finish-btn');
+
     if (finalScore >= 70) {
+        // JIKA LULUS: Unlock Level B & Ubah Tombol
         localStorage.setItem('levelB_unlocked', 'true');
         sBenar.play();
-    } else {
-        sSalah.play();
-    }
-    // --------------------------------------
 
+        finishBtn.innerText = "🚀 LANJUT KE LEVEL B SUPERLATIVE";
+        finishBtn.style.backgroundColor = "var(--accent-color)"; // Warna Hijau
+        finishBtn.onclick = function() {
+            // Balik ke menu materi
+            const name = localStorage.getItem('studentName');
+            showMaterialPage(name); 
+            document.getElementById('result-page').classList.add('hidden');
+            window.scrollTo(0, 0);
+        };
+    } else {
+        // JIKA GAGAL: Tetap Ulangi
+        sSalah.play();
+        finishBtn.innerText = "Ulangi Petualangan";
+        finishBtn.style.backgroundColor = "var(--primary-color)";
+        finishBtn.onclick = function() { location.reload(); };
+    }
+
+    // Tampilkan hasil
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
@@ -511,9 +527,28 @@ function submitScrollQuiz() {
     rankEl.style.backgroundColor = rankInfo.color;
     document.getElementById('rank-desc').innerText = rankInfo.desc;
     
-    // Reset userAnswers agar bersih
     userAnswers = {};
     window.scrollTo(0, 0);
+}
+
+// UPDATE FUNGSI INI JUGA AGAR GEMBOK TERBUKA SAAT DIKLIK "LANJUT"
+function showMaterialPage(name) {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('displayName').innerText = name;
+
+    // Cek localStorage apakah Level B sudah terbuka
+    if (localStorage.getItem('levelB_unlocked') === 'true') {
+        const bBox = document.getElementById('level-b-box');
+        bBox.classList.remove('locked');
+        bBox.classList.add('unlocked');
+        bBox.innerHTML = `<h3>🔓 Level B: Superlative</h3><p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>`;
+        bBox.onclick = function() { 
+            alert("Masuk ke Materi Superlative..."); 
+            // Tambahkan fungsi goToSuperlative() di sini nanti
+        };
+    }
 }
 
 function getRank(s) {
