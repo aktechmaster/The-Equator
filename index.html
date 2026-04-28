@@ -349,7 +349,7 @@ function backToMenu() {
 }
 
 function logout() {
-    localStorage.clear();
+    localStorage.clear(); // Ini akan menghapus semua termasuk savedAnswers
     location.reload();
 }
 
@@ -395,6 +395,13 @@ function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
 function startRealQuiz() {
     markExamAsStarted();
+    
+    // Ambil jawaban yang tersimpan di localStorage jika ada
+    const storedAnswers = localStorage.getItem('savedAnswers');
+    if (storedAnswers) {
+        userAnswers = JSON.parse(storedAnswers);
+    }
+
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
@@ -408,14 +415,24 @@ function startRealQuiz() {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa;";
         qDiv.innerHTML = `<p style="font-weight: bold; margin-bottom: 12px; color: #333;">${q.q}</p>`;
+        
         const optDiv = document.createElement('div');
-        optDiv.style.display = "grid"; optDiv.style.gap = "10px";
+        optDiv.style.display = "grid"; 
+        optDiv.style.gap = "10px";
         
         q.options.forEach((opt, oIdx) => {
             const btn = document.createElement('button');
             btn.style.cssText = "padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; color: #333;";
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
+            
+            // LOGIKA RESTORE: Jika index ini pernah dipilih, warnai biru langsung
+            if (userAnswers[qIdx] === oIdx) {
+                btn.style.backgroundColor = "#3498db";
+                btn.style.color = "white";
+                btn.style.borderColor = "#2980b9";
+            }
+
             btn.onclick = () => selectOption(qIdx, oIdx);
             optDiv.appendChild(btn);
         });
@@ -425,13 +442,25 @@ function startRealQuiz() {
 }
 
 function selectOption(qIdx, oIdx) {
+    // Reset warna tombol lain di soal yang sama
     questions[qIdx].options.forEach((_, i) => {
         const el = document.getElementById(`q${qIdx}o${i}`);
-        el.style.backgroundColor = "white"; el.style.color = "#333"; el.style.borderColor = "#ddd";
+        el.style.backgroundColor = "white"; 
+        el.style.color = "#333"; 
+        el.style.borderColor = "#ddd";
     });
+
+    // Tandai tombol yang dipilih
     const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
-    selectedBtn.style.backgroundColor = "#3498db"; selectedBtn.style.color = "white"; selectedBtn.style.borderColor = "#2980b9";
+    selectedBtn.style.backgroundColor = "#3498db"; 
+    selectedBtn.style.color = "white"; 
+    selectedBtn.style.borderColor = "#2980b9";
+
+    // Simpan ke variabel global
     userAnswers[qIdx] = oIdx;
+
+    // SIMPAN KE LOCALSTORAGE (Agar tidak hilang saat refresh)
+    localStorage.setItem('savedAnswers', JSON.stringify(userAnswers));
 }
 
 function submitScrollQuiz() {
@@ -440,18 +469,30 @@ function submitScrollQuiz() {
         alert(`Waduh! Kamu baru menjawab ${answeredCount} soal. Selesaikan semua dulu ya!`);
         return;
     }
+
+    // Hapus data kuis dari localStorage karena sudah selesai
     markExamAsFinished();
+    localStorage.removeItem('savedAnswers');
+
     let finalScore = 0;
-    questions.forEach((q, index) => { if (userAnswers[index] === q.a) finalScore += 10; });
+    questions.forEach((q, index) => { 
+        if (userAnswers[index] === q.a) finalScore += 10; 
+    });
+
     if (finalScore >= 70) sBenar.play(); else sSalah.play();
+    
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
+    
     const rankInfo = getRank(finalScore);
     const rankEl = document.getElementById('rank-title');
     rankEl.innerText = "RANK: " + rankInfo.title;
     rankEl.style.backgroundColor = rankInfo.color;
     document.getElementById('rank-desc').innerText = rankInfo.desc;
+    
+    // Reset userAnswers agar bersih
+    userAnswers = {};
     window.scrollTo(0, 0);
 }
 
