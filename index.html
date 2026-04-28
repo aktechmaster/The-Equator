@@ -243,15 +243,14 @@
 </style>
 
 <script>
-    
-    // Tambahkan audio (Gunakan link URL atau file lokal kamu)
-const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); 
-const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3'); // Tadi kurang tanda kutip di sini
+    // 1. Deklarasi Audio
+    const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); 
+    const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3');
 
-soundCorrect.volume = 0.5;
-soundWrong.volume = 0.5;
+    soundCorrect.volume = 0.5;
+    soundWrong.volume = 0.5;
     
-    // DEKLARASI VARIABEL PENTING AGAR BISA DIKLIK
+    // 2. Variabel Game
     let selectedAdj = null;
     let selectedComp = null;
     let solvedPairs = 0;
@@ -319,7 +318,7 @@ soundWrong.volume = 0.5;
         if (selectedAdj && selectedComp) {
             if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
                 // JAWABAN BENAR
-                soundCorrect.play(); // <--- TAMBAHKAN INI
+                soundCorrect.play();
                 selectedAdj.classList.add('correct');
                 selectedComp.classList.add('correct');
                 selectedAdj.disabled = true;
@@ -331,11 +330,18 @@ soundWrong.volume = 0.5;
                 }
             } else {
                 // JAWABAN SALAH
-                soundWrong.currentTime = 0; // Tambahkan ini agar suara "reset" saat diklik cepat
-                soundWrong.play(); 
+                soundWrong.currentTime = 0;
+                soundWrong.play();
                 
                 selectedAdj.classList.add('wrong');
                 selectedComp.classList.add('wrong');
+                
+                let a = selectedAdj; 
+                let c = selectedComp;
+                
+                setTimeout(() => {
+                    a.classList.remove('wrong', 'selected');
+                    c.classList.remove('wrong', 'selected');
                 }, 500);
             }
             selectedAdj = null;
