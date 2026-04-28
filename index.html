@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi: Degrees of Comparison</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Selamat Datang di Misi Belajar! 🚀</h1>
+        <p>Silakan daftar untuk memulai petualanganmu.</p>
+
+        <div id="login-section" class="card">
+            <input type="text" id="studentName" placeholder="Masukkan Nama Lengkap" required>
+            <input type="email" id="studentEmail" placeholder="Masukkan Email" required>
+            
+            <label for="classSelect">Pilih Kelas:</label>
+            <select id="classSelect">
+                <option value="7" disabled>Kelas 7 (Belum Tersedia)</option>
+                <option value="8" selected>Kelas 8 (Tersedia)</option>
+                <option value="9" disabled>Kelas 9 (Belum Tersedia)</option>
+            </select>
+
+            <button onclick="startMission()">Mulai Misi</button>
+        </div>
+
+        <div id="material-section" class="card hidden">
+            <h2>Materi: Degree of Comparison</h2>
+            
+            <div class="level-box unlocked" onclick="goToComparative()">
+                <h3>🔓 Level A: Comparative</h3>
+                <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
+            </div>
+
+            <div class="level-box locked" onclick="alert('Selesaikan Level A dulu ya!')">
+                <h3>🔒 Level B: Superlative</h3>
+                <p>Belajar membandingkan TIGA hal/lebih (Paling...)</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
