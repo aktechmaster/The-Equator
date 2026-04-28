@@ -116,7 +116,7 @@
     <div class="level-box locked">Chapter 5 | What were They Doing?</div>
     <div class="level-box locked">Chapter 6 | Let Me Tell You My Story</div>
     
-    <div class="level-box unlocked" onclick="goToComparative()" style="border-left: 8px solid #3498db;">
+    <div class="level-box unlocked" onclick="startComparative()" style="border-left: 8px solid #3498db;">
         Chapter 7 | I'm Taller than You (Comparative)
     </div>
     
@@ -578,6 +578,23 @@ function getRank(s) {
     function goToSuperlative() {
     alert("Selamat! Kamu masuk ke Level B: Superlative. (Halaman materi sedang disiapkan)");
     // Nanti di sini kamu bisa arahkan ke page baru seperti goToComparative()
+}
+
+    function startComparative() {
+    // 1. Sembunyikan menu daftar chapter
+    document.getElementById('material-section').classList.add('hidden');
+    
+    // 2. Munculkan section materi Comparative Anda
+    // GANTI 'comparative-section' di bawah ini dengan ID asli section materi Anda
+    // Biasanya namanya 'comparative-section', 'study-section', atau 'materi-1'
+    const sectionMateri = document.getElementById('comparative-section'); 
+    
+    if (sectionMateri) {
+        sectionMateri.classList.remove('hidden');
+        window.scrollTo(0,0); // Agar layar kembali ke atas
+    } else {
+        alert("Error: ID Section Materi tidak ditemukan. Periksa ID pada baris materi Anda.");
+    }
 }
     
 </script>
