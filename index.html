@@ -3,532 +3,576 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Equator - Future Learning</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <title>The Equator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00d2ff;
-            --secondary: #3a7bd5;
-            --accent: #00f2fe;
-            --success: #2ecc71;
-            --danger: #ff4757;
-            --glass: rgba(255, 255, 255, 0.95);
-            --bg: #f0f4f8;
-            --text: #1e293b;
-            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --primary-color: #3498db;
+            --accent-color: #2ecc71;
+            --locked-color: #95a5a6;
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body { 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            color: var(--text);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .container { width: 100%; max-width: 850px; position: relative; }
-
-        /* HEADER STYLING */
-        header { text-align: center; margin-bottom: 40px; }
-        h1 { 
-            font-size: 3.5rem; 
-            font-weight: 800; 
-            background: linear-gradient(to right, var(--secondary), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -2px;
-            margin-bottom: 5px;
-        }
-        .subtitle { 
-            font-size: 1rem; 
-            color: #64748b; 
-            font-weight: 500;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
-
-        /* CARD STYLING (GLASSMORPHISM) */
-        .card { 
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border-radius: 24px; 
-            padding: 40px; 
-            box-shadow: var(--shadow); 
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            margin-bottom: 30px;
-            transition: transform 0.3s ease;
-        }
-
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .hidden { display: none !important; }
+        h1 { text-align: center; color: var(--primary-color); }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; font-family: 'Poppins'; }
+        label { font-weight: 600; font-size: 0.9rem; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        .level-box { padding: 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .unlocked { border-color: var(--accent-color); border-left: 8px solid var(--accent-color); background: white; }
+        .locked { background: #f9f9f9; color: var(--locked-color); opacity: 0.7; cursor: not-allowed; border: 1px solid #eee; }
+        
+        .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: 'Poppins'; }
 
-        /* FORM INPUTS */
-        input, select { 
-            width: 100%; 
-            padding: 16px; 
-            margin: 12px 0; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 12px; 
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: #f8fafc;
-        }
-        input:focus, select:focus { 
-            border-color: var(--primary); 
-            outline: none; 
-            box-shadow: 0 0 0 4px rgba(0, 210, 255, 0.1);
-            background: white;
-        }
+        /* Gaya Tabel */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
 
-        /* BUTTONS */
-        .btn-primary { 
-            width: 100%; 
-            padding: 18px; 
-            background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
-            color: white; 
-            border: none; 
-            border-radius: 16px; 
-            font-weight: 700; 
-            font-size: 1.1rem;
-            cursor: pointer; 
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 15px -3px rgba(58, 123, 213, 0.3);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 20px 25px -5px rgba(58, 123, 213, 0.4); }
-        .btn-primary:active { transform: translateY(0); }
-
-        /* LEVEL BOXES */
-        .level-box { 
-            padding: 25px; 
-            border-radius: 20px; 
-            margin-bottom: 20px; 
-            cursor: pointer; 
-            border: 2px solid transparent; 
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
-        }
-        .unlocked { 
-            background: white; 
-            border-color: #e2e8f0; 
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .unlocked:hover { border-color: var(--success); transform: scale(1.02); }
-        .locked { 
-            background: #f1f5f9; 
-            color: #94a3b8; 
-            cursor: not-allowed; 
-            filter: grayscale(1);
-        }
-
-        /* TABLE CUSTOMIZATION */
-        .table-container { overflow-x: auto; border-radius: 16px; margin: 20px 0; }
-        table { width: 100%; border-collapse: collapse; background: white; }
-        th { background: #f8fafc; padding: 15px; text-align: left; font-weight: 800; font-size: 0.85rem; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; }
-        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.95rem; }
-
-        /* GAME MATCHING UI */
-        .game-container { 
-            background: #f8fafc; 
-            padding: 25px; 
-            border-radius: 24px; 
+        /* Gaya Game Matching yang Phone Friendly */
+        .game-container {
+            background: #fdfdfd;
+            border: 2px dashed var(--primary-color);
+            padding: 15px;
+            border-radius: 15px;
             margin-top: 40px;
-            border: 2px dashed #cbd5e1;
-        }
-        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-        .game-btn { 
-            min-height: 60px; 
-            padding: 15px; 
-            border: 2px solid #e2e8f0; 
-            border-radius: 14px; 
-            background: white; 
-            cursor: pointer; 
-            font-weight: 600;
-            transition: all 0.2s;
-        }
-        .selected { background: #e0f7ff; border-color: var(--primary); color: var(--secondary); transform: scale(0.98); }
-        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
-        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
-
-        /* QUIZ UI */
-        .quiz-item { 
-            background: #f8fafc; 
-            padding: 20px; 
-            border-radius: 16px; 
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .option-btn {
-            width: 100%; text-align: left; padding: 14px 20px; margin-top: 10px;
-            border: 2px solid #e2e8f0; border-radius: 12px; background: white;
-            cursor: pointer; font-family: inherit; transition: all 0.2s;
-        }
-        .option-btn:hover { border-color: var(--primary); background: #f0f9ff; }
-
-        /* RANK BADGE */
-        #rank-title { 
-            padding: 12px 30px; 
-            border-radius: 100px; 
-            text-transform: uppercase; 
-            font-weight: 900; 
-            letter-spacing: 2px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
 
-        /* ANIMATIONS */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .card { animation: fadeIn 0.6s ease-out forwards; }
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .game-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .game-btn {
+            width: 100%;
+            min-height: 50px;
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-family: 'Poppins';
+            font-size: 0.85rem;
+            transition: 0.3s;
+            word-wrap: break-word;
+        }
+
+        @media (max-width: 400px) {
+            .game-btn { font-size: 0.75rem; padding: 8px 2px; }
+            .game-container { padding: 10px; }
+        }
+
+        .selected { background: #d4e6f1; border-color: var(--primary-color); }
+        .correct { background: var(--accent-color) !important; color: white; border-color: var(--accent-color); }
+        .wrong { background: #f2d7d5 !important; border-color: #e74c3c; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>EQUATOR</h1>
-        <p class="subtitle">English Quick & Active Tutor</p>
-    </header>
+    <h1>EQUATOR</h1>
+    <p class="subtitle">English Quick & Active Tutor</p>
 
     <div id="login-section" class="card">
-        <h2 style="margin-bottom: 20px; font-weight: 800;">Welcome, Explorer! 🚀</h2>
-        <label>Nama Lengkap</label>
-        <input type="text" id="studentName" placeholder="Contoh: Alex Murphy">
+        <h2 style="font-size: 1.2rem; margin-bottom: 15px;">Mulai Petualanganmu!</h2>
+        <input type="text" id="studentName" placeholder="Masukkan Nama">
+        <input type="email" id="studentEmail" placeholder="Masukkan Email">
         
-        <label>Email Student</label>
-        <input type="email" id="studentEmail" placeholder="alex@school.com">
-        
-        <label>Pilih Level Kelas</label>
+        <label for="classSelect">Pilih Kelas:</label>
         <select id="classSelect">
-            <option value="7" disabled>Kelas 7 (Coming Soon)</option>
-            <option value="8" selected>Kelas 8 (Ready)</option>
-            <option value="9" disabled>Kelas 9 (Coming Soon)</option>
+            <option value="7" disabled>Kelas 7 (Not Available)</option>
+            <option value="8" selected>Kelas 8 (Available)</option>
+            <option value="9" disabled>Kelas 9 (Not Available)</option>
         </select>
 
-        <button class="btn-primary" style="margin-top: 20px;" onclick="startMission()">Mulai Petualangan</button>
+        <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
     </div>
 
     <div id="material-section" class="card hidden">
-        <h2 style="margin-bottom: 5px;">Halo, <span id="displayName" style="color:var(--secondary)"></span>! 👋</h2>
-        <p style="color: #64748b; margin-bottom: 30px;">Pilih jalur misimu hari ini:</p>
+        <h2>Halo, <span id="displayName"></span>! 👋</h2>
+        <p style="margin-bottom: 20px;">Silahkan pilih materi belajarmu:</p>
         
         <div class="level-box unlocked" onclick="goToComparative()">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="font-size: 40px;">🎯</div>
-                <div>
-                    <h3 style="font-weight: 800;">Level A: Comparative</h3>
-                    <p style="color: #64748b; font-size: 0.9rem;">Belajar membandingkan dua hal (Lebih... daripada...)</p>
-                </div>
-            </div>
+            <h3>🔓 Level A: Comparative</h3>
+            <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
         </div>
 
         <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <div style="font-size: 40px;">👑</div>
-                <div>
-                    <h3 style="font-weight: 800;">Level B: Superlative</h3>
-                    <p style="font-size: 0.9rem;">Belajar membandingkan banyak hal (Paling...)</p>
-                </div>
-            </div>
-        </div>
+    <h3>🔒 Level B: Superlative</h3>
+    <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
+</div>
         
-        <div style="text-align: center; margin-top: 20px;">
-            <button onclick="logout()" style="color:var(--danger); background:none; border:none; cursor:pointer; font-weight: 600; font-size: 0.9rem;">Keluar Sesi</button>
-        </div>
+        <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; text-decoration: underline; margin-top: 10px;">Keluar / Ganti Nama</button>
     </div>
 
     <div id="comparative-page" class="card hidden">
-        <button class="btn-back" style="background:none; border:none; color:var(--secondary); font-weight:700; cursor:pointer; margin-bottom: 20px;" onclick="backToMenu()">← KEMBALI</button>
-        
-        <h2 style="font-weight: 800; margin-bottom: 15px;">Level A: Comparative Degree</h2>
-        <p style="color: #64748b; line-height: 1.6;">Gunakan kata ini untuk membandingkan <b>dua benda</b> atau orang.</p>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 25px 0;">
-            <div style="background: #f0f9ff; padding: 20px; border-radius: 16px; border-left: 5px solid var(--primary);">
-                <span style="font-weight: 800; color: var(--secondary);">TIPE 1</span><br>
-                1 Suku Kata<br><b>Adj + er</b>
-            </div>
-            <div style="background: #f0fdf4; padding: 20px; border-radius: 16px; border-left: 5px solid var(--success);">
-                <span style="font-weight: 800; color: var(--success);">TIPE 2</span><br>
-                2+ Suku Kata<br><b>More + Adj</b>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin: 30px 0;">
-            <img src="cheetah.png" alt="Cheetah" style="width: 100%; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
-            <p style="margin-top: 15px; font-style: italic; color: #64748b;">"Cheetah is <b>faster</b> than a horse."</p>
-        </div>
-
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr><th>Adjective</th><th>Comparative</th><th>Meaning</th></tr>
-                </thead>
-                <tbody>
-                    <tr><td>Tall</td><td><b>Taller</b></td><td>Lebih Tinggi</td></tr>
-                    <tr><td>Fast</td><td><b>Faster</b></td><td>Lebih Cepat</td></tr>
-                    <tr><td>Beautiful</td><td><b>More Beautiful</b></td><td>Lebih Cantik</td></tr>
-                    <tr><td>Good</td><td><b style="color:var(--danger)">Better</b></td><td>Lebih Baik</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="game-container">
-            <h3 style="text-align: center; margin-bottom: 5px;">🎮 Pair Training</h3>
-            <p style="text-align: center; font-size: 0.8rem; color: #64748b; margin-bottom: 20px;">Hubungkan kata sifat dengan bentuk komparatifnya!</p>
+            <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
+            <h2>Level A: Comparative Degree <span style="color: red;">(Lebih .... Dari pada ....)</span></h2>
             
-            <div class="game-grid">
-                <div class="game-column" style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="1">Fast</button>
-                    <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="2">Expensive</button>
-                    <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="3">Good</button>
-                    <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="4">Big</button>
+            <div style="margin-top:20px;">
+                <p>Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
+                <br>
+                <p><b>Catatan:</b></p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>1 Suku Kata: <i>Adjective + <b>er</b></i></li>
+                    <li>Contoh: <i>Fast + <b>er</b> --> Faster</i></li><br>
+                    <li>2+ Suku Kata: <i><b>More</b> + Adjective</i></li>
+                    <li>Contoh: <i><b>More</b> + Beautiful ---> More Beautiful</i></li>
+                </ul>
+                <br>
+                
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="cheetah.png" alt="Cheetah Racing" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
                 </div>
-                <div class="game-column" style="display: flex; flex-direction: column; gap: 10px;">
-                    <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="3">Better</button>
-                    <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="1">Faster</button>
-                    <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="4">Bigger</button>
-                    <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="2">More Expensive</button>
+                
+                <div style="background: #eef2f3; padding: 15px; border-radius: 8px; border-left: 5px solid var(--primary-color); margin-bottom: 30px;">
+                    <i>Contoh: <br>"The Cheetah is <span style="color: red;"><b>faster</b></span> than the Horse."<br> "Cheetah <span style="color: red;"><b>LEBIH cepat</b></span> dari pada Kuda"</i>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="sportcar.png" alt="Sport Car" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                </div>
+                
+                <div style="background: #eef2f3; padding: 15px; border-radius: 8px; border-left: 5px solid var(--primary-color); margin-bottom: 30px;">
+                    <i>Contoh: <br>"Sport car is <span style="color: red;"><b>More Expensive</b></span> than Family car."<br> "Mobil sport <span style="color: red;"><b>LEBIH mahal</b></span> dari pada Mobil keluarga"</i>
+                </div>
+
+                <h2 style="margin-top: 40px; color: var(--text-color); border-bottom: 3px double var(--primary-color); display: inline-block; padding-bottom: 5px;">
+                    📊 Let's see the changes
+                </h2>
+                
+                <p style="font-size: 0.9rem; color: #7f8c8d; margin-bottom: 20px;">
+                    Perhatikan perubahan kata sifat di bawah ini untuk memahami polanya:
+                </p>
+
+                <h3 style="margin-top: 30px; color: var(--primary-color);">1. Short Adjectives (+er)</h3>
+                <table>
+                    <tr style="background-color: var(--primary-color); color: white;">
+                        <th>Adjective</th><th>Comparative</th><th>Artinya</th>
+                    </tr>
+                    <tr><td>Tall</td><td>Taller</td><td>Lebih Tinggi</td></tr>
+                    <tr><td>Short</td><td>Shorter</td><td>Lebih Pendek</td></tr>
+                    <tr><td>Fast</td><td>Faster</td><td>Lebih Cepat</td></tr>
+                    <tr><td>Slow</td><td>Slower</td><td>Lebih Lambat</td></tr>
+                    <tr><td>Big</td><td>Bigger</td><td>Lebih Besar</td></tr>
+                    <tr><td>Small</td><td>Smaller</td><td>Lebih Kecil</td></tr>
+                    <tr><td>Old</td><td>Older</td><td>Lebih Tua</td></tr>
+                    <tr><td>Young</td><td>Younger</td><td>Lebih Muda</td></tr>
+                    <tr><td>Cheap</td><td>Cheaper</td><td>Lebih Murah</td></tr>
+                    <tr><td>Strong</td><td>Stronger</td><td>Lebih Kuat</td></tr>
+                </table>
+
+                <h3 style="margin-top: 25px; color: var(--accent-color);">2. Long Adjectives (More + ...)</h3>
+                <table>
+                    <tr style="background-color: var(--accent-color); color: white;">
+                        <th>Adjective</th><th>Comparative</th><th>Artinya</th>
+                    </tr>
+                    <tr><td>Beautiful</td><td>More Beautiful</td><td>Lebih Cantik</td></tr>
+                    <tr><td>Expensive</td><td>More Expensive</td><td>Lebih Mahal</td></tr>
+                    <tr><td>Diligent</td><td>More Diligent</td><td>Lebih Rajin</td></tr>
+                    <tr><td>Difficult</td><td>More Difficult</td><td>Lebih Sulit</td></tr>
+                    <tr><td>Famous</td><td>More Famous</td><td>Lebih Terkenal</td></tr>
+                </table>
+
+                <h3 style="margin-top: 25px; color: #e67e22;">3. Irregular Adjectives (Pengecualian)</h3>
+                <table>
+                    <tr style="background-color: #e67e22; color: white;">
+                        <th>Adjective</th><th>Comparative</th><th>Artinya</th>
+                    </tr>
+                    <tr><td>Good</td><td><b>Better</b></td><td>Lebih Baik</td></tr>
+                    <tr><td>Bad</td><td><b>Worse</b></td><td>Lebih Buruk</td></tr>
+                    <tr><td>Far</td><td><b>Farther / Further</b></td><td>Lebih Jauh</td></tr>
+                </table>
+
+                <div class="game-container">
+                    <h3 style="text-align: center; color: var(--primary-color); font-size: 1.1rem;">🎮 Match the Pairs!</h3>
+                    <p style="text-align: center; font-size: 0.75rem; margin-bottom: 10px;">Klik kata sifat di kiri, lalu pasangannya di kanan!</p>
+                    
+                    <div class="game-grid">
+                        <div class="game-column">
+                            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="1">Fast</button>
+                            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="2">Expensive</button>
+                            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="3">Good</button>
+                            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="4">Big</button>
+                        </div>
+                        
+                        <div class="game-column">
+                            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="3">Better</button>
+                            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="1">Faster</button>
+                            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="4">Bigger</button>
+                            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="2">More Expensive</button>
+                        </div>
+                    </div>
+                    <div id="game-message" style="text-align: center; margin-top: 15px; font-size: 0.9rem; min-height: 20px; font-weight: bold; color: var(--accent-color);"></div>
                 </div>
             </div>
-            <div id="game-message" style="text-align: center; margin-top: 20px; font-weight: 700; color: var(--success);"></div>
+    </div>
+
+    <div id="game-overlay" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px;">
+        <div class="card" style="text-align: center; max-width: 400px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+            <div style="font-size: 50px;">👏🎉</div>
+            <h2 style="color: var(--accent-color); margin: 15px 0;">Luar Biasa!</h2>
+            <p>Kamu sudah memahami dasar Comparative dengan sangat baik. Siap untuk tantangan sesungguhnya?</p>
+            <button class="btn-primary" onclick="startRealQuiz()" style="background: var(--accent-color); margin-top: 20px;">
+                🚀 Lanjut ke Quiz (10 Soal)
+            </button>
         </div>
     </div>
 
     <div id="quiz-page" class="card hidden">
-        <h2 style="text-align: center; font-weight: 800; margin-bottom: 10px;">QUIZ CHALLENGE</h2>
-        <p style="text-align: center; color: #64748b; margin-bottom: 30px;">Tunjukkan kemampuan terbaikmu!</p>
+        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 5px;">EXAM: COMPARATIVE</h2>
+        <p style="text-align: center; color: #7f8c8d; font-size: 0.9rem; margin-bottom: 25px;">Pilih jawaban yang paling tepat secara tata bahasa.</p>
         
         <div id="quiz-list-container"></div>
         
-        <button class="btn-primary" onclick="submitScrollQuiz()" style="margin-top: 30px; background: var(--text);">
-            KIRIM JAWABAN AKHIR
-        </button>
-    </div>
-
-    <div id="result-page" class="card hidden" style="text-align: center;">
-        <h2 style="font-weight: 800; color: var(--secondary);">MISI SELESAI!</h2>
-        <div style="font-size: 100px; margin: 30px 0;">🏆</div>
-        <div id="final-score" style="font-size: 5rem; font-weight: 900; color: var(--text); line-height: 1;">0</div>
-        <div style="margin: 30px 0;">
-            <div id="rank-title">RANK: -</div>
-        </div>
-        <p id="rank-desc" style="color: #64748b; margin-bottom: 40px; font-size: 1.1rem;"></p>
-        
-        <button id="finish-btn" class="btn-primary" onclick="location.reload()">Ulangi Petualangan</button>
-    </div>
-
-    <div id="game-overlay" class="hidden" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.9); z-index: 1000; display: flex; justify-content: center; align-items: center; padding: 20px; backdrop-filter: blur(8px);">
-        <div class="card" style="text-align: center; max-width: 450px;">
-            <div style="font-size: 60px;">✨🔥</div>
-            <h2 style="margin: 20px 0; font-weight: 800;">Latihan Selesai!</h2>
-            <p style="color: #64748b;">Kamu sudah siap menghadapi ujian Comparative. Mari kita mulai!</p>
-            <button class="btn-primary" onclick="startRealQuiz()" style="margin-top: 25px; background: var(--success);">
-                MULAI UJIAN SEKARANG
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn-primary" onclick="submitScrollQuiz()" style="width: 100%; padding: 20px; font-size: 1.2rem; cursor: pointer;">
+                ✅ SELESAI & KIRIM JAWABAN
             </button>
         </div>
     </div>
+
+    <div id="result-page" class="card hidden" style="text-align: center;">
+    <h2 style="color: var(--primary-color);">MISI SELESAI!</h2>
+    <div style="font-size: 80px; margin: 20px 0;">🏆</div>
+    <div id="final-score" style="font-size: 4rem; font-weight: bold; color: var(--primary-color);">0</div>
+    <div id="rank-title" style="font-size: 1.5rem; font-weight: bold; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: white;"></div>
+    <p id="rank-desc" style="color: #7f8c8d; margin-bottom: 30px;"></p>
+    
+    <button id="finish-btn" class="btn-primary" onclick="location.reload()">Ulangi Petualangan</button>
 </div>
 
+</div>
+
+</body>
+
+<style>
+    @keyframes popIn {
+        0% { transform: scale(0.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+
 <script>
-    const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
-    const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
+    // 1. Deklarasi Audio
+const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
+const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
-    let selectedAdj = null, selectedComp = null, solvedPairs = 0;
-    const totalPairs = 4;
-    let userAnswers = {};
+// 2. Variabel Global
+let selectedAdj = null;
+let selectedComp = null;
+let solvedPairs = 0;
+const totalPairs = 4;
+let userAnswers = {};
 
-    const questions = [
-        { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
-        { q: "2. The task was ... than I thought it would be.", options: ["Difficulter", "More difficult", "Most difficult", "As difficult"], a: 1 },
-        { q: "3. My new teacher is ... than the previous one.", options: ["Patienter", "More patient", "Most patient", "Patiently"], a: 1 },
-        { q: "4. Your score is ... than mine, you should study harder.", options: ["Badder", "Worst", "Worse", "More bad"], a: 2 },
-        { q: "5. A city is usually ... than a small village.", options: ["Crowdeder", "More crowded", "Most crowded", "Crowded"], a: 1 },
-        { q: "6. Gold is ... than silver.", options: ["Expensiver", "More expensive", "Most expensive", "Expensive"], a: 1 },
-        { q: "7. This exercise is ... than the one we did yesterday.", options: ["Easier", "More easy", "Easyer", "Most easy"], a: 0 },
-        { q: "8. He looks ... than his older brother.", options: ["Handsome", "More handsome", "Handsomer", "Most handsome"], a: 1 },
-        { q: "9. The red bag is ... than the blue one.", options: ["Gooder", "Better", "Best", "More good"], a: 1 },
-        { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
-    ];
+const questions = [
+    { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
+    { q: "2. The task was ... than I thought it would be.", options: ["Difficulter", "More difficult", "Most difficult", "As difficult"], a: 1 },
+    { q: "3. My new teacher is ... than the previous one.", options: ["Patienter", "More patient", "Most patient", "Patiently"], a: 1 },
+    { q: "4. Your score is ... than mine, you should study harder.", options: ["Badder", "Worst", "Worse", "More bad"], a: 2 },
+    { q: "5. A city is usually ... than a small village.", options: ["Crowdeder", "More crowded", "Most crowded", "Crowded"], a: 1 },
+    { q: "6. Gold is ... than silver.", options: ["Expensiver", "More expensive", "Most expensive", "Expensive"], a: 1 },
+    { q: "7. This exercise is ... than the one we did yesterday.", options: ["Easier", "More easy", "Easyer", "Most easy"], a: 0 },
+    { q: "8. He looks ... than his older brother.", options: ["Handsome", "More handsome", "Handsomer", "Most handsome"], a: 1 },
+    { q: "9. The red bag is ... than the blue one.", options: ["Gooder", "Better", "Best", "More good"], a: 1 },
+    { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
+];
 
-    window.onload = function() {
-        const savedName = localStorage.getItem('studentName');
-        const examStatus = localStorage.getItem('examStatus');
-        const currentPage = localStorage.getItem('currentPage');
+// --- SISTEM PENYELAMAT DATA (HANYA SATU ONLOAD) ---
+window.onload = function() {
+    const savedName = localStorage.getItem('studentName');
+    const examStatus = localStorage.getItem('examStatus');
+    const currentPage = localStorage.getItem('currentPage');
 
-        if (savedName) {
-            document.getElementById('displayName').innerText = savedName;
-            if (examStatus === 'on-progress') {
-                startRealQuiz();
-            } else if (currentPage === 'comparative') {
-                goToComparative();
-            } else {
-                showMaterialPage(savedName);
-            }
-        }
-    };
+    if (savedName) {
+        // Sembunyikan form login jika sudah ada nama
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('displayName').innerText = savedName;
 
-    function startMission() {
-        const name = document.getElementById('studentName').value;
-        const email = document.getElementById('studentEmail').value;
-        if (name.trim() !== "" && email.trim() !== "") {
-            localStorage.setItem('studentName', name); 
-            showMaterialPage(name);
+        if (examStatus === 'on-progress') {
+            // Jika sedang ujian, langsung ke kuis
+            startRealQuiz();
+            alert("Melanjutkan ujian yang belum selesai...");
+        } else if (currentPage === 'comparative') {
+            // Jika tadi sedang baca materi
+            goToComparative();
         } else {
-            alert("Isi data dulu ya!");
+            // Jika di menu utama
+            showMaterialPage(savedName);
         }
     }
+};
 
-    function showMaterialPage(name) {
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-        document.getElementById('material-section').classList.remove('hidden');
-        document.getElementById('displayName').innerText = name;
-
-        if (localStorage.getItem('levelB_unlocked') === 'true') {
-            const bBox = document.getElementById('level-b-box');
-            bBox.classList.remove('locked');
-            bBox.classList.add('unlocked');
-            bBox.innerHTML = `<div style="display: flex; align-items: center; gap: 20px;">
-                <div style="font-size: 40px;">🔓</div>
-                <div><h3 style="font-weight: 800;">Level B: Superlative</h3><p style="font-size: 0.9rem;">Level terbuka! Siap lanjut?</p></div>
-            </div>`;
-            bBox.onclick = () => alert("Materi Superlative segera hadir!");
-        }
+// 3. Logika Navigasi
+function startMission() {
+    const name = document.getElementById('studentName').value;
+    const email = document.getElementById('studentEmail').value;
+    if (name.trim() !== "" && email.trim() !== "") {
+        localStorage.setItem('studentName', name); 
+        showMaterialPage(name);
+    } else {
+        alert("Mohon isi Nama dan Email terlebih dahulu ya!");
     }
+}
 
-    function goToComparative() {
-        document.getElementById('material-section').classList.add('hidden');
-        document.getElementById('comparative-page').classList.remove('hidden');
-        localStorage.setItem('currentPage', 'comparative');
+function showMaterialPage(name) {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('displayName').innerText = name;
+
+    // Cek apakah Level B sudah terbuka
+    const isLevelBUnlocked = localStorage.getItem('levelB_unlocked');
+    const levelBBox = document.getElementById('level-b-box'); // Kita beri ID nanti
+
+    if (isLevelBUnlocked === 'true') {
+        levelBBox.classList.remove('locked');
+        levelBBox.classList.add('unlocked');
+        levelBBox.innerHTML = `<h3>🔓 Level B: Superlative</h3>
+                               <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>`;
+        levelBBox.onclick = function() { goToSuperlative(); }; // Arahkan ke fungsi baru
     }
+}
 
-    function backToMenu() {
-        localStorage.removeItem('currentPage');
-        showMaterialPage(localStorage.getItem('studentName'));
+function goToComparative() {
+    document.getElementById('material-section').classList.add('hidden');
+    document.getElementById('comparative-page').classList.remove('hidden');
+    localStorage.setItem('currentPage', 'comparative');
+}
+
+function backToMenu() {
+    localStorage.removeItem('currentPage');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+}
+
+function logout() {
+    localStorage.clear(); // Ini akan menghapus semua termasuk savedAnswers
+    location.reload();
+}
+
+// 4. Logika Game Matching
+function selectWord(btn, type) {
+    if (type === 'adj') {
+        if (selectedAdj) selectedAdj.classList.remove('selected');
+        selectedAdj = btn;
+    } else {
+        if (selectedComp) selectedComp.classList.remove('selected');
+        selectedComp = btn;
     }
+    btn.classList.add('selected');
 
-    function selectWord(btn, type) {
-        if (type === 'adj') {
-            if (selectedAdj) selectedAdj.classList.remove('selected');
-            selectedAdj = btn;
-        } else {
-            if (selectedComp) selectedComp.classList.remove('selected');
-            selectedComp = btn;
-        }
-        btn.classList.add('selected');
-
-        if (selectedAdj && selectedComp) {
-            if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
-                sBenar.play();
-                selectedAdj.classList.add('correct');
-                selectedComp.classList.add('correct');
-                solvedPairs++;
-                if (solvedPairs === totalPairs) {
-                    setTimeout(() => document.getElementById('game-overlay').classList.remove('hidden'), 600);
-                }
-                selectedAdj = null; selectedComp = null;
-            } else {
-                sSalah.play();
-                selectedAdj.classList.add('wrong');
-                selectedComp.classList.add('wrong');
-                let a = selectedAdj, c = selectedComp;
-                setTimeout(() => { a.classList.remove('wrong', 'selected'); c.classList.remove('wrong', 'selected'); }, 500);
-                selectedAdj = null; selectedComp = null;
+    if (selectedAdj && selectedComp) {
+        if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
+            sBenar.currentTime = 0; sBenar.play().catch(e => {});
+            selectedAdj.classList.add('correct');
+            selectedComp.classList.add('correct');
+            selectedAdj.disabled = true; selectedComp.disabled = true;
+            solvedPairs++;
+            if (solvedPairs === totalPairs) {
+                setTimeout(() => document.getElementById('game-overlay').classList.remove('hidden'), 500);
             }
+            selectedAdj = null; selectedComp = null;
+        } else {
+            sSalah.currentTime = 0; sSalah.play().catch(e => {});
+            selectedAdj.classList.add('wrong');
+            selectedComp.classList.add('wrong');
+            let a = selectedAdj; let c = selectedComp;
+            setTimeout(() => {
+                a.classList.remove('wrong', 'selected');
+                c.classList.remove('wrong', 'selected');
+            }, 500);
+            selectedAdj = null; selectedComp = null;
         }
     }
+}
 
-    function startRealQuiz() {
-        localStorage.setItem('examStatus', 'on-progress');
-        const storedAnswers = localStorage.getItem('savedAnswers');
-        if (storedAnswers) userAnswers = JSON.parse(storedAnswers);
+// 5. Logika Kuis
+function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
+function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-        document.getElementById('game-overlay').classList.add('hidden');
-        document.getElementById('quiz-page').classList.remove('hidden');
+function startRealQuiz() {
+    markExamAsStarted();
+    
+    // Ambil jawaban yang tersimpan di localStorage jika ada
+    const storedAnswers = localStorage.getItem('savedAnswers');
+    if (storedAnswers) {
+        userAnswers = JSON.parse(storedAnswers);
+    }
+
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.add('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('game-overlay').classList.add('hidden');
+    document.getElementById('quiz-page').classList.remove('hidden');
+    
+    const container = document.getElementById('quiz-list-container');
+    container.innerHTML = ''; 
+
+    questions.forEach((q, qIdx) => {
+        const qDiv = document.createElement('div');
+        qDiv.style.cssText = "margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa;";
+        qDiv.innerHTML = `<p style="font-weight: bold; margin-bottom: 12px; color: #333;">${q.q}</p>`;
         
-        const container = document.getElementById('quiz-list-container');
-        container.innerHTML = ''; 
-
-        questions.forEach((q, qIdx) => {
-            const qDiv = document.createElement('div');
-            qDiv.className = 'quiz-item';
-            qDiv.innerHTML = `<p style="font-weight: 800; margin-bottom: 15px;">${q.q}</p>`;
+        const optDiv = document.createElement('div');
+        optDiv.style.display = "grid"; 
+        optDiv.style.gap = "10px";
+        
+        q.options.forEach((opt, oIdx) => {
+            const btn = document.createElement('button');
+            btn.style.cssText = "padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; color: #333;";
+            btn.innerText = opt;
+            btn.id = `q${qIdx}o${oIdx}`;
             
-            q.options.forEach((opt, oIdx) => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn';
-                btn.id = `q${qIdx}o${oIdx}`;
-                btn.innerText = opt;
-                if (userAnswers[qIdx] === oIdx) {
-                    btn.style.borderColor = "var(--primary)";
-                    btn.style.background = "#f0f9ff";
-                }
-                btn.onclick = () => {
-                    q.options.forEach((_, i) => {
-                        const el = document.getElementById(`q${qIdx}o${i}`);
-                        el.style.borderColor = "#e2e8f0"; el.style.background = "white";
-                    });
-                    btn.style.borderColor = "var(--primary)";
-                    btn.style.background = "#f0f9ff";
-                    userAnswers[qIdx] = oIdx;
-                    localStorage.setItem('savedAnswers', JSON.stringify(userAnswers));
-                };
-                qDiv.appendChild(btn);
-            });
-            container.appendChild(qDiv);
+            // LOGIKA RESTORE: Jika index ini pernah dipilih, warnai biru langsung
+            if (userAnswers[qIdx] === oIdx) {
+                btn.style.backgroundColor = "#3498db";
+                btn.style.color = "white";
+                btn.style.borderColor = "#2980b9";
+            }
+
+            btn.onclick = () => selectOption(qIdx, oIdx);
+            optDiv.appendChild(btn);
         });
+        qDiv.appendChild(optDiv);
+        container.appendChild(qDiv);
+    });
+}
+
+function selectOption(qIdx, oIdx) {
+    // Reset warna tombol lain di soal yang sama
+    questions[qIdx].options.forEach((_, i) => {
+        const el = document.getElementById(`q${qIdx}o${i}`);
+        el.style.backgroundColor = "white"; 
+        el.style.color = "#333"; 
+        el.style.borderColor = "#ddd";
+    });
+
+    // Tandai tombol yang dipilih
+    const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
+    selectedBtn.style.backgroundColor = "#3498db"; 
+    selectedBtn.style.color = "white"; 
+    selectedBtn.style.borderColor = "#2980b9";
+
+    // Simpan ke variabel global
+    userAnswers[qIdx] = oIdx;
+
+    // SIMPAN KE LOCALSTORAGE (Agar tidak hilang saat refresh)
+    localStorage.setItem('savedAnswers', JSON.stringify(userAnswers));
+}
+
+function submitScrollQuiz() {
+    const answeredCount = Object.keys(userAnswers).length;
+    if (answeredCount < 10) {
+        alert(`Waduh! Kamu baru menjawab ${answeredCount} soal. Selesaikan semua dulu ya!`);
+        return;
     }
 
-    function submitScrollQuiz() {
-        if (Object.keys(userAnswers).length < 10) {
-            alert("Selesaikan semua soal dulu!"); return;
-        }
-        localStorage.removeItem('examStatus');
-        localStorage.removeItem('savedAnswers');
+    markExamAsFinished();
+    localStorage.removeItem('savedAnswers');
 
-        let score = 0;
-        questions.forEach((q, i) => { if (userAnswers[i] === q.a) score += 10; });
+    let finalScore = 0;
+    questions.forEach((q, index) => { 
+        if (userAnswers[index] === q.a) finalScore += 10; 
+    });
 
-        const finishBtn = document.getElementById('finish-btn');
-        if (score >= 70) {
-            localStorage.setItem('levelB_unlocked', 'true');
-            sBenar.play();
-            finishBtn.innerText = "🚀 LANJUT KE LEVEL B";
-            finishBtn.style.background = "var(--success)";
-            finishBtn.onclick = () => showMaterialPage(localStorage.getItem('studentName'));
-        } else {
-            sSalah.play();
-            finishBtn.innerText = "Ulangi Petualangan";
-            finishBtn.onclick = () => location.reload();
-        }
+    // AMBIL ELEMEN TOMBOL
+    const finishBtn = document.getElementById('finish-btn');
 
-        document.getElementById('quiz-page').classList.add('hidden');
-        document.getElementById('result-page').classList.remove('hidden');
-        document.getElementById('final-score').innerText = score;
-        
-        const rank = getRank(score);
-        const rankEl = document.getElementById('rank-title');
-        rankEl.innerText = "RANK: " + rank.title;
-        rankEl.style.background = rank.color;
-        rankEl.style.color = "white";
-        document.getElementById('rank-desc').innerText = rank.desc;
-        window.scrollTo(0,0);
-    }
+    if (finalScore >= 70) {
+        // JIKA LULUS: Unlock Level B & Ubah Tombol
+        localStorage.setItem('levelB_unlocked', 'true');
+        sBenar.play();
 
-    function getRank(s) {
-        const ranks = {
-            100: {title: "GOD-TIER", desc: "Tak tersentuh!", color: "#8e44ad"},
-            90: {title: "OVERLORD", desc: "Mendominasi total!", color: "#c0392b"},
-            80: {title: "ELITE", desc: "Kelas atas!", color: "#d35400"},
-            70: {title: "VETERAN", desc: "Berpengalaman!", color: "#2980b9"},
-            0: {title: "NOVICE", desc: "Teruslah berlatih!", color: "#64748b"}
+        finishBtn.innerText = "🚀 LANJUT KE LEVEL B SUPERLATIVE";
+        finishBtn.style.backgroundColor = "var(--accent-color)"; // Warna Hijau
+        finishBtn.onclick = function() {
+            // Balik ke menu materi
+            const name = localStorage.getItem('studentName');
+            showMaterialPage(name); 
+            document.getElementById('result-page').classList.add('hidden');
+            window.scrollTo(0, 0);
         };
-        return ranks[s] || (s >= 50 ? ranks[0] : {title: "INFANT", desc: "Belajar lagi ya!", color: "#bdc3c7"});
+    } else {
+        // JIKA GAGAL: Tetap Ulangi
+        sSalah.play();
+        finishBtn.innerText = "Ulangi Petualangan";
+        finishBtn.style.backgroundColor = "var(--primary-color)";
+        finishBtn.onclick = function() { location.reload(); };
     }
 
-    function logout() { localStorage.clear(); location.reload(); }
+    // Tampilkan hasil
+    document.getElementById('quiz-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    document.getElementById('final-score').innerText = finalScore;
+    
+    const rankInfo = getRank(finalScore);
+    const rankEl = document.getElementById('rank-title');
+    rankEl.innerText = "RANK: " + rankInfo.title;
+    rankEl.style.backgroundColor = rankInfo.color;
+    document.getElementById('rank-desc').innerText = rankInfo.desc;
+    
+    userAnswers = {};
+    window.scrollTo(0, 0);
+}
+
+// UPDATE FUNGSI INI JUGA AGAR GEMBOK TERBUKA SAAT DIKLIK "LANJUT"
+function showMaterialPage(name) {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('displayName').innerText = name;
+
+    // Cek localStorage apakah Level B sudah terbuka
+    if (localStorage.getItem('levelB_unlocked') === 'true') {
+        const bBox = document.getElementById('level-b-box');
+        bBox.classList.remove('locked');
+        bBox.classList.add('unlocked');
+        bBox.innerHTML = `<h3>🔓 Level B: Superlative</h3><p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>`;
+        bBox.onclick = function() { 
+            alert("Masuk ke Materi Superlative..."); 
+            // Tambahkan fungsi goToSuperlative() di sini nanti
+        };
+    }
+}
+
+function getRank(s) {
+    const ranks = {
+        100: {title: "GOD-TIER", desc: "Tak tersentuh!", color: "#8e44ad"},
+        90: {title: "OVERLORD", desc: "Mendominasi total!", color: "#c0392b"},
+        80: {title: "ELITE", desc: "Kelas atas!", color: "#d35400"},
+        70: {title: "VETERAN", desc: "Berpengalaman luas!", color: "#2980b9"},
+        60: {title: "SOLDIER", desc: "Sesuai tugas!", color: "#27ae60"},
+        50: {title: "CIVILIAN", desc: "Rata-rata/Umum.", color: "#16a085"},
+        40: {title: "OUTCAST", desc: "Di bawah standar.", color: "#7f8c8d"},
+        30: {title: "NOVICE", desc: "Pemula sekali.", color: "#95a5a6"},
+        20: {title: "SLAVE", desc: "Hanya mengikuti tanpa pemahaman.", color: "#34495e"},
+        10: {title: "INFANT", desc: "Baru lahir/Belum tahu apa-apa.", color: "#bdc3c7"},
+        0: {title: "ASHES", desc: "Tidak berharga/Sudah habis.", color: "#2c3e50"}
+    };
+    return ranks[s] || ranks[0];
+}
+
+    function goToSuperlative() {
+    alert("Selamat! Kamu masuk ke Level B: Superlative. (Halaman materi sedang disiapkan)");
+    // Nanti di sini kamu bisa arahkan ke page baru seperti goToComparative()
+}
+    
 </script>
 
 </body>
