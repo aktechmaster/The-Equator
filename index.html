@@ -292,27 +292,26 @@ const questions = [
     { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
 ];
 
-// --- FUNGSI UTAMA (WINDOW ONLOAD) ---
-// Hanya boleh ada SATU fungsi ini di seluruh file
+// --- SISTEM PENYELAMAT DATA (HANYA SATU ONLOAD) ---
 window.onload = function() {
-    const status = localStorage.getItem('examStatus');
-    const savedName = localStorage.getItem('isLoggedIn');
-    const lastPage = localStorage.getItem('currentPage');
+    const savedName = localStorage.getItem('studentName');
+    const examStatus = localStorage.getItem('examStatus');
+    const currentPage = localStorage.getItem('currentPage');
 
     if (savedName) {
-        // JIKA SUDAH LOGIN: LANGSUNG SEMBUNYIKAN LOGIN SECTION
+        // Sembunyikan form login jika sudah ada nama
         document.getElementById('login-section').classList.add('hidden');
         document.getElementById('displayName').innerText = savedName;
 
-        if (status === 'on-progress') {
-            // Jika sedang ujian, paksa masuk ke kuis
+        if (examStatus === 'on-progress') {
+            // Jika sedang ujian, langsung ke kuis
             startRealQuiz();
             alert("Melanjutkan ujian yang belum selesai...");
-        } else if (lastPage === 'comparative') {
-            // Jika tidak ujian, cek apakah tadi sedang buka materi
+        } else if (currentPage === 'comparative') {
+            // Jika tadi sedang baca materi
             goToComparative();
         } else {
-            // Jika hanya di menu utama
+            // Jika di menu utama
             document.getElementById('material-section').classList.remove('hidden');
         }
     }
@@ -324,7 +323,6 @@ function startMission() {
     const email = document.getElementById('studentEmail').value;
     if (name.trim() !== "" && email.trim() !== "") {
         localStorage.setItem('studentName', name); 
-        localStorage.setItem('isLoggedIn', name);
         showMaterialPage(name);
     } else {
         alert("Mohon isi Nama dan Email terlebih dahulu ya!");
@@ -391,7 +389,7 @@ function selectWord(btn, type) {
     }
 }
 
-// 5. Logika Kuis (Anti-Refresh)
+// 5. Logika Kuis
 function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
 function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
@@ -473,32 +471,6 @@ function getRank(s) {
     };
     return ranks[s] || ranks[0];
 }
-
-    // --- SISTEM ANTI-REFRESH ---
-
-// 1. Fungsi untuk mencatat bahwa siswa sedang mulai ujian
-function markExamAsStarted() {
-    localStorage.setItem('examStatus', 'on-progress');
-}
-
-// 2. Fungsi untuk mencatat bahwa ujian sudah selesai (agar bisa balik ke materi nanti)
-function markExamAsFinished() {
-    localStorage.removeItem('examStatus');
-}
-
-// 3. Logika yang berjalan OTOMATIS saat halaman dibuka/refresh
-window.onload = function() {
-    const status = localStorage.getItem('examStatus');
-    const name = localStorage.getItem('studentName'); // Pastikan nama tersimpan
-
-    if (status === 'on-progress' && name) {
-        // Jika statusnya lagi ujian, paksa buka halaman kuis
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('material-section').classList.add('hidden');
-        startRealQuiz(); // Panggil fungsi kuis kamu
-        alert("Melanjutkan ujian yang belum selesai...");
-    }
-};
     
 </script>
 
