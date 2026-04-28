@@ -264,7 +264,6 @@
 
 </div>
 
-</body>
 
 <style>
     @keyframes popIn {
@@ -364,8 +363,8 @@ function goToComparative() {
 
 function backToMenu() {
     localStorage.removeItem('currentPage');
-    document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('comparative-page').classList.add('hidden'); // Sembunyikan materi
+    document.getElementById('material-section').classList.remove('hidden'); // Munculkan daftar chapter
 }
 
 function logout() {
@@ -584,16 +583,15 @@ function getRank(s) {
     // 1. Sembunyikan menu daftar chapter
     document.getElementById('material-section').classList.add('hidden');
     
-    // 2. Munculkan section materi Comparative Anda
-    // GANTI 'comparative-section' di bawah ini dengan ID asli section materi Anda
-    // Biasanya namanya 'comparative-section', 'study-section', atau 'materi-1'
-    const sectionMateri = document.getElementById('comparative-section'); 
+    // 2. Munculkan section materi Comparative (ID-nya harus 'comparative-page')
+    const sectionMateri = document.getElementById('comparative-page'); 
     
     if (sectionMateri) {
         sectionMateri.classList.remove('hidden');
-        window.scrollTo(0,0); // Agar layar kembali ke atas
+        localStorage.setItem('currentPage', 'comparative'); // Agar jika di-refresh tidak hilang
+        window.scrollTo(0,0); 
     } else {
-        alert("Error: ID Section Materi tidak ditemukan. Periksa ID pada baris materi Anda.");
+        alert("Error: ID comparative-page tidak ditemukan!");
     }
 }
     
