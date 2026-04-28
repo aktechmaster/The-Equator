@@ -244,8 +244,8 @@
 
 <script>
     // 1. Deklarasi Audio
-    const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3'); 
-    const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/951/951-preview.mp3');
+    const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
+    const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
     soundCorrect.volume = 0.5;
     soundWrong.volume = 0.5;
@@ -317,8 +317,10 @@
 
         if (selectedAdj && selectedComp) {
             if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
-                // JAWABAN BENAR
-                soundCorrect.play();
+                // JAWABAN BENAR - Bunyi Klontang/Ceria
+                sBenar.currentTime = 0;
+                sBenar.play().catch(e => console.log("Audio play blocked"));
+                
                 selectedAdj.classList.add('correct');
                 selectedComp.classList.add('correct');
                 selectedAdj.disabled = true;
@@ -329,9 +331,9 @@
                     setTimeout(showAppreciation, 500);
                 }
             } else {
-                // JAWABAN SALAH
-                soundWrong.currentTime = 0;
-                soundWrong.play();
+                // JAWABAN SALAH - Bunyi Boing/Totet
+                sSalah.currentTime = 0;
+                sSalah.play().catch(e => console.log("Audio play blocked"));
                 
                 selectedAdj.classList.add('wrong');
                 selectedComp.classList.add('wrong');
