@@ -243,19 +243,17 @@
 </style>
 
 <script>
-    // 1. Deklarasi Audio
+    // 1. Deklarasi Audio (Link Google yang Stabil)
     const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
     const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
-    soundCorrect.volume = 0.5;
-    soundWrong.volume = 0.5;
-    
     // 2. Variabel Game
     let selectedAdj = null;
     let selectedComp = null;
     let solvedPairs = 0;
     const totalPairs = 4;
 
+    // 3. Fungsi Load Otomatis (Biar Refresh Nggak Balik ke Awal)
     window.onload = function() {
         const savedName = localStorage.getItem('isLoggedIn');
         const lastPage = localStorage.getItem('currentPage');
@@ -304,7 +302,9 @@
         location.reload();
     }
 
+    // 4. Logika Game Matching
     function selectWord(btn, type) {
+        // Hapus kelas selected dari pilihan sebelumnya di kolom yang sama
         if (type === 'adj') {
             if (selectedAdj) selectedAdj.classList.remove('selected');
             selectedAdj = btn;
@@ -315,9 +315,10 @@
         
         btn.classList.add('selected');
 
+        // Jika kedua kolom sudah diklik
         if (selectedAdj && selectedComp) {
             if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
-                // JAWABAN BENAR - Bunyi Klontang/Ceria
+                // JAWABAN BENAR
                 sBenar.currentTime = 0;
                 sBenar.play().catch(e => console.log("Audio play blocked"));
                 
@@ -325,13 +326,18 @@
                 selectedComp.classList.add('correct');
                 selectedAdj.disabled = true;
                 selectedComp.disabled = true;
+                
                 solvedPairs++;
                 
                 if (solvedPairs === totalPairs) {
                     setTimeout(showAppreciation, 500);
                 }
+                
+                // Reset seleksi
+                selectedAdj = null;
+                selectedComp = null;
             } else {
-                // JAWABAN SALAH - Bunyi Boing/Totet
+                // JAWABAN SALAH
                 sSalah.currentTime = 0;
                 sSalah.play().catch(e => console.log("Audio play blocked"));
                 
@@ -341,13 +347,15 @@
                 let a = selectedAdj; 
                 let c = selectedComp;
                 
+                // Beri jeda sebentar biar kelihatan warna merahnya, baru reset
                 setTimeout(() => {
                     a.classList.remove('wrong', 'selected');
                     c.classList.remove('wrong', 'selected');
                 }, 500);
+                
+                selectedAdj = null;
+                selectedComp = null;
             }
-            selectedAdj = null;
-            selectedComp = null;
         }
     }
 
