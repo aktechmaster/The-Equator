@@ -244,11 +244,8 @@
 
 <script>
     // 1. Deklarasi Audio (Link Google yang Stabil)
-    const sBenar = new Audio('https://www.soundjay.com/buttons/sounds/button-11.mp3'); 
-    const sSalah = new Audio('https://www.soundjay.com/buttons/sounds/button-10.mp3');
-
-    sBenar.volume = 1.0;
-    sSalah.volume = 1.0;
+    const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
+    const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
     // 2. Variabel Game
     let selectedAdj = null;
@@ -339,25 +336,23 @@
                 // Reset seleksi
                 selectedAdj = null;
                 selectedComp = null;
-                
             } else {
-                // JAWABAN SALAH - Paksa bunyi TETOT dulu baru visual
-                sSalah.currentTime = 0; 
-                sSalah.play().catch(e => console.log("Audio play blocked: " + e));
+                // JAWABAN SALAH
+                sSalah.currentTime = 0;
+                sSalah.play().catch(e => console.log("Audio play blocked"));
                 
                 selectedAdj.classList.add('wrong');
                 selectedComp.classList.add('wrong');
                 
-                // Simpan variabel sementara untuk di-reset
-                let tempAdj = selectedAdj; 
-                let tempComp = selectedComp;
+                let a = selectedAdj; 
+                let c = selectedComp;
                 
+                // Beri jeda sebentar biar kelihatan warna merahnya, baru reset
                 setTimeout(() => {
-                    tempAdj.classList.remove('wrong', 'selected');
-                    tempComp.classList.remove('wrong', 'selected');
+                    a.classList.remove('wrong', 'selected');
+                    c.classList.remove('wrong', 'selected');
                 }, 500);
-
-                // Reset seleksi utama agar user bisa klik lagi
+                
                 selectedAdj = null;
                 selectedComp = null;
             }
