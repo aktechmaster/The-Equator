@@ -31,6 +31,38 @@
         .locked { background: #f9f9f9; color: var(--locked-color); opacity: 0.7; cursor: not-allowed; border: 1px solid #eee; }
         
         .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: 'Poppins'; }
+
+        /* Gaya untuk Game Matching */
+.game-container {
+    background: #fdfdfd;
+    border: 2px dashed var(--primary-color);
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 40px;
+}
+.game-grid {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+.game-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.game-btn {
+    padding: 10px 20px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-family: 'Poppins';
+    transition: 0.3s;
+}
+.game-btn:hover { border-color: var(--primary-color); }
+.selected { background: #d4e6f1; border-color: var(--primary-color); }
+.correct { background: var(--accent-color) !important; color: white; border-color: var(--accent-color); }
+.wrong { background: #f2d7d5 !important; border-color: #e74c3c; }
     </style>
 </head>
 <body>
@@ -149,6 +181,28 @@
                     <tr><td>Bad</td><td><b>Worse</b></td><td>Lebih Buruk</td></tr>
                     <tr><td>Far</td><td><b>Farther / Further</b></td><td>Lebih Jauh</td></tr>
                 </table>
+
+                <div class="game-container">
+    <h3 style="text-align: center; color: var(--primary-color);">🎮 Mini Game: Match the Pairs!</h3>
+    <p style="text-align: center; font-size: 0.8rem;">Klik satu kata di kiri, lalu klik pasangannya di kanan!</p>
+    
+    <div class="game-grid">
+        <div class="game-column" id="adj-col">
+            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="1">Fast</button>
+            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="2">Expensive</button>
+            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="3">Good</button>
+            <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="4">Big</button>
+        </div>
+        
+        <div class="game-column" id="comp-col">
+            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="3">Better</button>
+            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="1">Faster</button>
+            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="4">Bigger</button>
+            <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="2">More Expensive</button>
+        </div>
+    </div>
+    <div id="game-message" style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--accent-color);"></div>
+</div>
             </div>
         </div>
     </div>
@@ -205,6 +259,47 @@
         localStorage.clear();
         location.reload();
     }
+
+    let selectedAdj = null;
+let selectedComp = null;
+
+function selectWord(btn, type) {
+    // Hapus seleksi sebelumnya di kolom yang sama
+    if (type === 'adj') {
+        if (selectedAdj) selectedAdj.classList.remove('selected');
+        selectedAdj = btn;
+    } else {
+        if (selectedComp) selectedComp.classList.remove('selected');
+        selectedComp = btn;
+    }
+    
+    btn.classList.add('selected');
+
+    // Jika keduanya sudah dipilih, cek kecocokan
+    if (selectedAdj && selectedComp) {
+        if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
+            // BENAR
+            selectedAdj.classList.add('correct');
+            selectedComp.classList.add('correct');
+            selectedAdj.disabled = true;
+            selectedComp.disabled = true;
+            document.getElementById('game-message').innerText = "Great Job! 🎉";
+            setTimeout(() => { document.getElementById('game-message').innerText = ""; }, 1500);
+        } else {
+            // SALAH
+            selectedAdj.classList.add('wrong');
+            selectedComp.classList.add('wrong');
+            let a = selectedAdj; let c = selectedComp;
+            setTimeout(() => {
+                a.classList.remove('wrong', 'selected');
+                c.classList.remove('wrong', 'selected');
+            }, 500);
+        }
+        // Reset pilihan
+        selectedAdj = null;
+        selectedComp = null;
+    }
+}
 </script>
 
 </body>
