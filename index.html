@@ -268,148 +268,17 @@
 </style>
 
 <script>
-    // 1. Deklarasi Audio (Link Google yang Stabil)
-    const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
-    const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
+    // 1. Deklarasi Audio
+const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
+const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
-    // 2. Variabel Game
-    let selectedAdj = null;
-    let selectedComp = null;
-    let solvedPairs = 0;
-    const totalPairs = 4;
+// 2. Variabel Global
+let selectedAdj = null;
+let selectedComp = null;
+let solvedPairs = 0;
+const totalPairs = 4;
+let userAnswers = {};
 
-    // 3. Fungsi Load Otomatis (Biar Refresh Nggak Balik ke Awal)
-    window.onload = function() {
-    const status = localStorage.getItem('examStatus');
-    const savedName = localStorage.getItem('isLoggedIn');
-    const lastPage = localStorage.getItem('currentPage');
-
-    // JIKA USER SUDAH LOGIN
-    if (savedName) {
-        // PERINTAH PENTING: Sembunyikan kotak login segera!
-        document.getElementById('login-section').classList.add('hidden');
-
-        // Cek apakah dia kabur saat ujian (Anti-Refresh)
-        if (status === 'on-progress') {
-            showMaterialPage(savedName); // Siapkan data nama
-            startRealQuiz();            // Paksa masuk ke lembar soal
-            alert("Melanjutkan ujian yang belum selesai...");
-        } 
-        // Jika tidak sedang ujian, cek halaman terakhirnya di mana
-        else {
-            showMaterialPage(savedName);
-            if (lastPage === 'comparative') {
-                goToComparative();
-            }
-        }
-    }
-};
-
-    function startMission() {
-    const name = document.getElementById('studentName').value;
-    const email = document.getElementById('studentEmail').value;
-
-    if (name.trim() !== "" && email.trim() !== "") {
-        // --- TAMBAHAN DI SINI: Simpan nama untuk sistem anti-refresh ---
-        localStorage.setItem('studentName', name); 
-        
-        localStorage.setItem('isLoggedIn', name);
-        showMaterialPage(name);
-    } else {
-        alert("Mohon isi Nama dan Email terlebih dahulu ya!");
-    }
-}
-
-    function showMaterialPage(name) {
-        document.getElementById('login-section').classList.add('hidden');
-        document.getElementById('material-section').classList.remove('hidden');
-        document.getElementById('comparative-page').classList.add('hidden');
-        document.getElementById('displayName').innerText = name;
-    }
-
-    function goToComparative() {
-        document.getElementById('material-section').classList.add('hidden');
-        document.getElementById('comparative-page').classList.remove('hidden');
-        localStorage.setItem('currentPage', 'comparative');
-    }
-
-    function backToMenu() {
-        localStorage.removeItem('currentPage');
-        document.getElementById('comparative-page').classList.add('hidden');
-        document.getElementById('material-section').classList.remove('hidden');
-    }
-
-    function logout() {
-        localStorage.clear();
-        location.reload();
-    }
-
-    // 4. Logika Game Matching
-    function selectWord(btn, type) {
-        // Hapus kelas selected dari pilihan sebelumnya di kolom yang sama
-        if (type === 'adj') {
-            if (selectedAdj) selectedAdj.classList.remove('selected');
-            selectedAdj = btn;
-        } else {
-            if (selectedComp) selectedComp.classList.remove('selected');
-            selectedComp = btn;
-        }
-        
-        btn.classList.add('selected');
-
-        // Jika kedua kolom sudah diklik
-        if (selectedAdj && selectedComp) {
-            if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
-                // JAWABAN BENAR
-                sBenar.currentTime = 0;
-                sBenar.play().catch(e => console.log("Audio play blocked"));
-                
-                selectedAdj.classList.add('correct');
-                selectedComp.classList.add('correct');
-                selectedAdj.disabled = true;
-                selectedComp.disabled = true;
-                
-                solvedPairs++;
-                
-                if (solvedPairs === totalPairs) {
-                    setTimeout(showAppreciation, 500);
-                }
-                
-                // Reset seleksi
-                selectedAdj = null;
-                selectedComp = null;
-            } else {
-                // JAWABAN SALAH
-                sSalah.currentTime = 0;
-                sSalah.play().catch(e => console.log("Audio play blocked"));
-                
-                selectedAdj.classList.add('wrong');
-                selectedComp.classList.add('wrong');
-                
-                let a = selectedAdj; 
-                let c = selectedComp;
-                
-                // Beri jeda sebentar biar kelihatan warna merahnya, baru reset
-                setTimeout(() => {
-                    a.classList.remove('wrong', 'selected');
-                    c.classList.remove('wrong', 'selected');
-                }, 500);
-                
-                selectedAdj = null;
-                selectedComp = null;
-            }
-        }
-    }
-
-    function showAppreciation() {
-        document.getElementById('game-overlay').classList.remove('hidden');
-    }
-
-    function startRealQuiz() {
-        alert("Siapkan dirimu! Quiz 10 soal akan segera dimulai.");
-    }
-
-    // --- LOGIKA KUIS COMPARATIVE ---
 const questions = [
     { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
     { q: "2. The task was ... than I thought it would be.", options: ["Difficulter", "More difficult", "Most difficult", "As difficult"], a: 1 },
@@ -423,26 +292,117 @@ const questions = [
     { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
 ];
 
-let userAnswers = {};
+// --- FUNGSI UTAMA (WINDOW ONLOAD) ---
+// Hanya boleh ada SATU fungsi ini di seluruh file
+window.onload = function() {
+    const status = localStorage.getItem('examStatus');
+    const savedName = localStorage.getItem('isLoggedIn');
+    const lastPage = localStorage.getItem('currentPage');
+
+    if (savedName) {
+        // JIKA SUDAH LOGIN: LANGSUNG SEMBUNYIKAN LOGIN SECTION
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('displayName').innerText = savedName;
+
+        if (status === 'on-progress') {
+            // Jika sedang ujian, paksa masuk ke kuis
+            startRealQuiz();
+            alert("Melanjutkan ujian yang belum selesai...");
+        } else if (lastPage === 'comparative') {
+            // Jika tidak ujian, cek apakah tadi sedang buka materi
+            goToComparative();
+        } else {
+            // Jika hanya di menu utama
+            document.getElementById('material-section').classList.remove('hidden');
+        }
+    }
+};
+
+// 3. Logika Navigasi
+function startMission() {
+    const name = document.getElementById('studentName').value;
+    const email = document.getElementById('studentEmail').value;
+    if (name.trim() !== "" && email.trim() !== "") {
+        localStorage.setItem('studentName', name); 
+        localStorage.setItem('isLoggedIn', name);
+        showMaterialPage(name);
+    } else {
+        alert("Mohon isi Nama dan Email terlebih dahulu ya!");
+    }
+}
+
+function showMaterialPage(name) {
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('displayName').innerText = name;
+}
+
+function goToComparative() {
+    document.getElementById('material-section').classList.add('hidden');
+    document.getElementById('comparative-page').classList.remove('hidden');
+    localStorage.setItem('currentPage', 'comparative');
+}
+
+function backToMenu() {
+    localStorage.removeItem('currentPage');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
+}
+
+function logout() {
+    localStorage.clear();
+    location.reload();
+}
+
+// 4. Logika Game Matching
+function selectWord(btn, type) {
+    if (type === 'adj') {
+        if (selectedAdj) selectedAdj.classList.remove('selected');
+        selectedAdj = btn;
+    } else {
+        if (selectedComp) selectedComp.classList.remove('selected');
+        selectedComp = btn;
+    }
+    btn.classList.add('selected');
+
+    if (selectedAdj && selectedComp) {
+        if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
+            sBenar.currentTime = 0; sBenar.play().catch(e => {});
+            selectedAdj.classList.add('correct');
+            selectedComp.classList.add('correct');
+            selectedAdj.disabled = true; selectedComp.disabled = true;
+            solvedPairs++;
+            if (solvedPairs === totalPairs) {
+                setTimeout(() => document.getElementById('game-overlay').classList.remove('hidden'), 500);
+            }
+            selectedAdj = null; selectedComp = null;
+        } else {
+            sSalah.currentTime = 0; sSalah.play().catch(e => {});
+            selectedAdj.classList.add('wrong');
+            selectedComp.classList.add('wrong');
+            let a = selectedAdj; let c = selectedComp;
+            setTimeout(() => {
+                a.classList.remove('wrong', 'selected');
+                c.classList.remove('wrong', 'selected');
+            }, 500);
+            selectedAdj = null; selectedComp = null;
+        }
+    }
+}
+
+// 5. Logika Kuis (Anti-Refresh)
+function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
+function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
 function startRealQuiz() {
     markExamAsStarted();
-    
-    // Sembunyikan SEMUA halaman selain kuis
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('game-overlay').classList.add('hidden');
-    
-    // Tampilkan hanya halaman kuis
     document.getElementById('quiz-page').classList.remove('hidden');
     
-    // Render ulang soal agar tidak kosong setelah refresh
-    renderQuizSoal(); 
-}
-
-// Pisahkan fungsi render agar bisa dipanggil ulang saat refresh
-function renderQuizSoal() {
     const container = document.getElementById('quiz-list-container');
     container.innerHTML = ''; 
 
@@ -450,7 +410,6 @@ function renderQuizSoal() {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa;";
         qDiv.innerHTML = `<p style="font-weight: bold; margin-bottom: 12px; color: #333;">${q.q}</p>`;
-        
         const optDiv = document.createElement('div');
         optDiv.style.display = "grid"; optDiv.style.gap = "10px";
         
@@ -459,13 +418,6 @@ function renderQuizSoal() {
             btn.style.cssText = "padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; color: #333;";
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
-            
-            // Jika user refresh, tandai lagi jawaban yang sudah pernah dipilih (Optional tapi bagus)
-            if (userAnswers[qIdx] === oIdx) {
-                btn.style.backgroundColor = "#3498db";
-                btn.style.color = "white";
-            }
-
             btn.onclick = () => selectOption(qIdx, oIdx);
             optDiv.appendChild(btn);
         });
@@ -475,66 +427,36 @@ function renderQuizSoal() {
 }
 
 function selectOption(qIdx, oIdx) {
-    // Reset semua pilihan di soal tersebut
     questions[qIdx].options.forEach((_, i) => {
         const el = document.getElementById(`q${qIdx}o${i}`);
-        el.style.backgroundColor = "white";
-        el.style.color = "#333";
-        el.style.borderColor = "#ddd";
+        el.style.backgroundColor = "white"; el.style.color = "#333"; el.style.borderColor = "#ddd";
     });
-    
-    // Warnai yang dipilih (Biru tapi teks tetap putih agar kontras)
     const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
-    selectedBtn.style.backgroundColor = "#3498db"; 
-    selectedBtn.style.color = "white";
-    selectedBtn.style.borderColor = "#2980b9";
-    
+    selectedBtn.style.backgroundColor = "#3498db"; selectedBtn.style.color = "white"; selectedBtn.style.borderColor = "#2980b9";
     userAnswers[qIdx] = oIdx;
 }
 
 function submitScrollQuiz() {
-    // Cek apakah sudah dijawab semua
     const answeredCount = Object.keys(userAnswers).length;
     if (answeredCount < 10) {
         alert(`Waduh! Kamu baru menjawab ${answeredCount} soal. Selesaikan semua dulu ya!`);
         return;
     }
-
-    // --- TAMBAHAN DI SINI: Hapus status ujian karena sudah selesai ---
-    if (typeof markExamAsFinished === 'function') {
-        markExamAsFinished();
-    } else {
-        localStorage.removeItem('examStatus');
-    }
-
+    markExamAsFinished();
     let finalScore = 0;
-    questions.forEach((q, index) => {
-        if (userAnswers[index] === q.a) {
-            finalScore += 10;
-        }
-    });
-
-    // Play Sound
-    if (finalScore >= 70) { 
-        if(typeof sBenar !== 'undefined') sBenar.play(); 
-    } else { 
-        if(typeof sSalah !== 'undefined') sSalah.play(); 
-    }
-
+    questions.forEach((q, index) => { if (userAnswers[index] === q.a) finalScore += 10; });
+    if (finalScore >= 70) sBenar.play(); else sSalah.play();
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
-    
     const rankInfo = getRank(finalScore);
     const rankEl = document.getElementById('rank-title');
     rankEl.innerText = "RANK: " + rankInfo.title;
     rankEl.style.backgroundColor = rankInfo.color;
     document.getElementById('rank-desc').innerText = rankInfo.desc;
-    
-    // Scroll ke atas biar kelihatan hasilnya
     window.scrollTo(0, 0);
 }
-    
+
 function getRank(s) {
     const ranks = {
         100: {title: "GOD-TIER", desc: "Tak tersentuh!", color: "#8e44ad"},
