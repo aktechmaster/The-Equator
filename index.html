@@ -233,7 +233,30 @@
             </button>
         </div>
     </div>
+
+    <div id="quiz-page" class="card hidden">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <span id="quiz-progress" style="font-weight: bold; color: var(--primary-color);">Soal 1/10</span>
+        </div>
+        <div id="question-container">
+            <h3 id="question-text" style="margin-bottom: 20px;">Loading...</h3>
+            <div id="options-container" style="display: grid; gap: 10px;"></div>
+        </div>
+    </div>
+
+    <div id="result-page" class="card hidden" style="text-align: center;">
+        <h2 style="color: var(--primary-color);">MISI SELESAI!</h2>
+        <div style="font-size: 80px; margin: 20px 0;">🏆</div>
+        <div style="font-size: 1.2rem;">Skor Kamu:</div>
+        <div id="final-score" style="font-size: 4rem; font-weight: bold; color: var(--primary-color);">0</div>
+        <div id="rank-title" style="font-size: 1.5rem; font-weight: bold; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: white;"></div>
+        <p id="rank-desc" style="color: #7f8c8d; margin-bottom: 30px;"></p>
+        <button class="btn-primary" onclick="location.reload()">Ulangi Petualangan</button>
+    </div>
+
 </div>
+
+</body>
 
 <style>
     @keyframes popIn {
@@ -366,6 +389,93 @@
     function startRealQuiz() {
         alert("Siapkan dirimu! Quiz 10 soal akan segera dimulai.");
     }
+
+    // --- LOGIKA KUIS COMPARATIVE ---
+const questions = [
+    { q: "An elephant is ... than a cat.", options: ["Bigger", "More big", "Bigest", "Smallest"], a: 0 },
+    { q: "This car is ... than the blue one.", options: ["Cheap", "Cheaper", "More cheap", "Cheapest"], a: 1 },
+    { q: "English is ... than Math for me.", options: ["Easyer", "More easy", "Easier", "Most easy"], a: 2 },
+    { q: "A diamond is ... than a stone.", options: ["Expensive", "More expensive", "Expensiver", "Most expensive"], a: 1 },
+    { q: "Your score is ... than my score.", options: ["Gooder", "Best", "Better", "More good"], a: 2 },
+    { q: "The weather today is ... than yesterday.", options: ["Badder", "Worse", "Worst", "More bad"], a: 1 },
+    { q: "A mountain is ... than a hill.", options: ["Higher", "High", "More high", "Highest"], a: 0 },
+    { q: "The plane is ... than a train.", options: ["Fast", "Faster", "More fast", "Fastest"], a: 1 },
+    { q: "The bag is ... than the wallet.", options: ["Heavier", "Heavyer", "More heavy", "Heaviest"], a: 0 },
+    { q: "This house is ... than my house.", options: ["Comfortable", "More comfortable", "Comfortabler", "Most comfortable"], a: 1 }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+function startRealQuiz() {
+    // Sembunyikan semua halaman lain
+    document.getElementById('game-overlay').classList.add('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('material-section').classList.add('hidden');
+    
+    // Tampilkan halaman kuis
+    document.getElementById('quiz-page').classList.remove('hidden');
+    showQuestion();
+}
+
+function showQuestion() {
+    const q = questions[currentQuestionIndex];
+    document.getElementById('quiz-progress').innerText = `Soal ${currentQuestionIndex + 1}/10`;
+    document.getElementById('question-text').innerText = q.q;
+    
+    const container = document.getElementById('options-container');
+    container.innerHTML = '';
+    
+    q.options.forEach((opt, index) => {
+        const btn = document.createElement('button');
+        btn.className = 'game-btn';
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(index);
+        container.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected) {
+    if (selected === questions[currentQuestionIndex].a) {
+        score += 10;
+        if (typeof sBenar !== 'undefined') sBenar.play();
+    } else {
+        if (typeof sSalah !== 'undefined') sSalah.play();
+    }
+
+    currentQuestionIndex++;
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showResult();
+    }
+}
+
+function showResult() {
+    document.getElementById('quiz-page').classList.add('hidden');
+    document.getElementById('result-page').classList.remove('hidden');
+    document.getElementById('final-score').innerText = score;
+    
+    const rankInfo = getRank(score);
+    const rankEl = document.getElementById('rank-title');
+    rankEl.innerText = "RANK: " + rankInfo.title;
+    rankEl.style.backgroundColor = rankInfo.color;
+    document.getElementById('rank-desc').innerText = rankInfo.desc;
+}
+
+function getRank(s) {
+    if (s >= 100) return { title: "GOD-TIER", desc: "(Tak tersentuh)", color: "#8e44ad" };
+    if (s >= 90)  return { title: "OVERLORD", desc: "(Mendominasi total)", color: "#c0392b" };
+    if (s >= 80)  return { title: "ELITE", desc: "(Kelas atas)", color: "#d35400" };
+    if (s >= 70)  return { title: "VETERAN", desc: "(Berpengalaman luas)", color: "#2980b9" };
+    if (s >= 60)  return { title: "SOLDIER", desc: "(Sesuai tugas)", color: "#27ae60" };
+    if (s >= 50)  return { title: "CIVILIAN", desc: "(Rata-rata/Umum)", color: "#16a085" };
+    if (s >= 40)  return { title: "OUTCAST", desc: "(Di bawah standar)", color: "#7f8c8d" };
+    if (s >= 30)  return { title: "NOVICE", desc: "(Pemula sekali)", color: "#95a5a6" };
+    if (s >= 20)  return { title: "SLAVE", desc: "(Hanya mengikuti tanpa pemahaman)", color: "#34495e" };
+    if (s >= 10)  return { title: "INFANT", desc: "(Baru lahir/Belum tahu apa-apa)", color: "#bdc3c7" };
+    return { title: "ASHES", desc: "(Tidak berharga/Sudah habis)", color: "#2c3e50" };
+}
 </script>
 
 </body>
