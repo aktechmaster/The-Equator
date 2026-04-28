@@ -292,16 +292,19 @@
     };
 
     function startMission() {
-        const name = document.getElementById('studentName').value;
-        const email = document.getElementById('studentEmail').value;
+    const name = document.getElementById('studentName').value;
+    const email = document.getElementById('studentEmail').value;
 
-        if (name.trim() !== "" && email.trim() !== "") {
-            localStorage.setItem('isLoggedIn', name);
-            showMaterialPage(name);
-        } else {
-            alert("Mohon isi Nama dan Email terlebih dahulu ya!");
-        }
+    if (name.trim() !== "" && email.trim() !== "") {
+        // --- TAMBAHAN DI SINI: Simpan nama untuk sistem anti-refresh ---
+        localStorage.setItem('studentName', name); 
+        
+        localStorage.setItem('isLoggedIn', name);
+        showMaterialPage(name);
+    } else {
+        alert("Mohon isi Nama dan Email terlebih dahulu ya!");
     }
+}
 
     function showMaterialPage(name) {
         document.getElementById('login-section').classList.add('hidden');
@@ -409,6 +412,7 @@ const questions = [
 let userAnswers = {};
 
 function startRealQuiz() {
+    markExamAsStarted(); // <-- TAMBAHKAN BARIS INI (Sangat Penting)
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
@@ -467,6 +471,13 @@ function submitScrollQuiz() {
         return;
     }
 
+    // --- TAMBAHAN DI SINI: Hapus status ujian karena sudah selesai ---
+    if (typeof markExamAsFinished === 'function') {
+        markExamAsFinished();
+    } else {
+        localStorage.removeItem('examStatus');
+    }
+
     let finalScore = 0;
     questions.forEach((q, index) => {
         if (userAnswers[index] === q.a) {
@@ -494,7 +505,7 @@ function submitScrollQuiz() {
     // Scroll ke atas biar kelihatan hasilnya
     window.scrollTo(0, 0);
 }
-
+    
 function getRank(s) {
     const ranks = {
         100: {title: "GOD-TIER", desc: "Tak tersentuh!", color: "#8e44ad"},
@@ -511,6 +522,33 @@ function getRank(s) {
     };
     return ranks[s] || ranks[0];
 }
+
+    // --- SISTEM ANTI-REFRESH ---
+
+// 1. Fungsi untuk mencatat bahwa siswa sedang mulai ujian
+function markExamAsStarted() {
+    localStorage.setItem('examStatus', 'on-progress');
+}
+
+// 2. Fungsi untuk mencatat bahwa ujian sudah selesai (agar bisa balik ke materi nanti)
+function markExamAsFinished() {
+    localStorage.removeItem('examStatus');
+}
+
+// 3. Logika yang berjalan OTOMATIS saat halaman dibuka/refresh
+window.onload = function() {
+    const status = localStorage.getItem('examStatus');
+    const name = localStorage.getItem('studentName'); // Pastikan nama tersimpan
+
+    if (status === 'on-progress' && name) {
+        // Jika statusnya lagi ujian, paksa buka halaman kuis
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('material-section').classList.add('hidden');
+        startRealQuiz(); // Panggil fungsi kuis kamu
+        alert("Melanjutkan ujian yang belum selesai...");
+    }
+};
+    
 </script>
 
 </body>
