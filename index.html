@@ -235,19 +235,19 @@
     </div>
 
     <div id="quiz-page" class="card hidden">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <span id="quiz-progress" style="font-weight: bold; color: var(--primary-color);">Soal 1/10</span>
-        </div>
-        <div id="question-container">
-            <h3 id="question-text" style="margin-bottom: 20px;">Loading...</h3>
-            <div id="options-container" style="display: grid; gap: 10px;"></div>
+        <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 20px;">EXAM: COMPARATIVE</h2>
+        <div id="quiz-list-container">
+            </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <button class="btn-primary" onclick="submitScrollQuiz()" style="width: 100%; padding: 20px; font-size: 1.2rem;">
+                ✅ SELESAI & CEK SKOR
+            </button>
         </div>
     </div>
 
     <div id="result-page" class="card hidden" style="text-align: center;">
         <h2 style="color: var(--primary-color);">MISI SELESAI!</h2>
         <div style="font-size: 80px; margin: 20px 0;">🏆</div>
-        <div style="font-size: 1.2rem;">Skor Kamu:</div>
         <div id="final-score" style="font-size: 4rem; font-weight: bold; color: var(--primary-color);">0</div>
         <div id="rank-title" style="font-size: 1.5rem; font-weight: bold; padding: 10px; border-radius: 8px; display: inline-block; margin-bottom: 20px; color: white;"></div>
         <p id="rank-desc" style="color: #7f8c8d; margin-bottom: 30px;"></p>
@@ -392,71 +392,89 @@
 
     // --- LOGIKA KUIS COMPARATIVE ---
 const questions = [
-    { q: "An elephant is ... than a cat.", options: ["Bigger", "More big", "Bigest", "Smallest"], a: 0 },
-    { q: "This car is ... than the blue one.", options: ["Cheap", "Cheaper", "More cheap", "Cheapest"], a: 1 },
-    { q: "English is ... than Math for me.", options: ["Easyer", "More easy", "Easier", "Most easy"], a: 2 },
-    { q: "A diamond is ... than a stone.", options: ["Expensive", "More expensive", "Expensiver", "Most expensive"], a: 1 },
-    { q: "Your score is ... than my score.", options: ["Gooder", "Best", "Better", "More good"], a: 2 },
-    { q: "The weather today is ... than yesterday.", options: ["Badder", "Worse", "Worst", "More bad"], a: 1 },
-    { q: "A mountain is ... than a hill.", options: ["Higher", "High", "More high", "Highest"], a: 0 },
-    { q: "The plane is ... than a train.", options: ["Fast", "Faster", "More fast", "Fastest"], a: 1 },
-    { q: "The bag is ... than the wallet.", options: ["Heavier", "Heavyer", "More heavy", "Heaviest"], a: 0 },
-    { q: "This house is ... than my house.", options: ["Comfortable", "More comfortable", "Comfortabler", "Most comfortable"], a: 1 }
+    { q: "1. An elephant is ... than a cat.", options: ["Bigger", "More big", "Bigest", "Smallest"], a: 0 },
+    { q: "2. This car is ... than the blue one.", options: ["Cheap", "Cheaper", "More cheap", "Cheapest"], a: 1 },
+    { q: "3. English is ... than Math for me.", options: ["Easyer", "More easy", "Easier", "Most easy"], a: 2 },
+    { q: "4. A diamond is ... than a stone.", options: ["Expensive", "More expensive", "Expensiver", "Most expensive"], a: 1 },
+    { q: "5. Your score is ... than my score.", options: ["Gooder", "Best", "Better", "More good"], a: 2 },
+    { q: "6. The weather today is ... than yesterday.", options: ["Badder", "Worse", "Worst", "More bad"], a: 1 },
+    { q: "7. A mountain is ... than a hill.", options: ["Higher", "High", "More high", "Highest"], a: 0 },
+    { q: "8. The plane is ... than a train.", options: ["Fast", "Faster", "More fast", "Fastest"], a: 1 },
+    { q: "9. The bag is ... than the wallet.", options: ["Heavier", "Heavyer", "More heavy", "Heaviest"], a: 0 },
+    { q: "10. This house is ... than my house.", options: ["Comfortable", "More comfortable", "Comfortabler", "Most comfortable"], a: 1 }
 ];
 
-let currentQuestionIndex = 0;
-let score = 0;
-
+// Fungsi Memulai Kuis (Munculkan semua soal sekaligus)
 function startRealQuiz() {
-    // Sembunyikan semua halaman lain
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('material-section').classList.add('hidden');
-    
-    // Tampilkan halaman kuis
     document.getElementById('quiz-page').classList.remove('hidden');
-    showQuestion();
-}
+    
+    const container = document.getElementById('quiz-list-container');
+    container.innerHTML = ''; // Bersihkan dulu
 
-function showQuestion() {
-    const q = questions[currentQuestionIndex];
-    document.getElementById('quiz-progress').innerText = `Soal ${currentQuestionIndex + 1}/10`;
-    document.getElementById('question-text').innerText = q.q;
-    
-    const container = document.getElementById('options-container');
-    container.innerHTML = '';
-    
-    q.options.forEach((opt, index) => {
-        const btn = document.createElement('button');
-        btn.className = 'game-btn';
-        btn.innerText = opt;
-        btn.onclick = () => checkAnswer(index);
-        container.appendChild(btn);
+    questions.forEach((q, qIdx) => {
+        const qDiv = document.createElement('div');
+        qDiv.style.marginBottom = "25px";
+        qDiv.style.padding = "15px";
+        qDiv.style.borderBottom = "1px solid #eee";
+        
+        qDiv.innerHTML = `<p style="font-weight: bold; margin-bottom: 10px;">${q.q}</p>`;
+        
+        const optDiv = document.createElement('div');
+        optDiv.style.display = "grid";
+        optDiv.style.gap = "8px";
+        
+        q.options.forEach((opt, oIdx) => {
+            const btn = document.createElement('button');
+            btn.className = 'game-btn quiz-opt';
+            btn.innerText = opt;
+            btn.id = `q${qIdx}o${oIdx}`;
+            btn.onclick = () => selectOption(qIdx, oIdx);
+            optDiv.appendChild(btn);
+        });
+        
+        qDiv.appendChild(optDiv);
+        container.appendChild(qDiv);
     });
 }
 
-function checkAnswer(selected) {
-    if (selected === questions[currentQuestionIndex].a) {
-        score += 10;
-        if (typeof sBenar !== 'undefined') sBenar.play();
-    } else {
-        if (typeof sSalah !== 'undefined') sSalah.play();
-    }
+// Simpan jawaban sementara
+let userAnswers = {};
 
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-        showQuestion();
-    } else {
-        showResult();
-    }
+function selectOption(qIdx, oIdx) {
+    // Hapus warna selected di soal yang sama
+    questions[qIdx].options.forEach((_, i) => {
+        const el = document.getElementById(`q${qIdx}o${i}`);
+        el.classList.remove('selected');
+        el.style.backgroundColor = ""; 
+    });
+    
+    // Tandai yang dipilih
+    const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
+    selectedBtn.classList.add('selected');
+    selectedBtn.style.backgroundColor = "var(--primary-color)";
+    selectedBtn.style.color = "white";
+    
+    userAnswers[qIdx] = oIdx;
 }
 
-function showResult() {
+function submitScrollQuiz() {
+    let finalScore = 0;
+    
+    questions.forEach((q, index) => {
+        if (userAnswers[index] === q.a) {
+            finalScore += 10;
+        }
+    });
+
+    if (finalScore >= 70) { sBenar.play(); } else { sSalah.play(); }
+
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
-    document.getElementById('final-score').innerText = score;
+    document.getElementById('final-score').innerText = finalScore;
     
-    const rankInfo = getRank(score);
+    const rankInfo = getRank(finalScore);
     const rankEl = document.getElementById('rank-title');
     rankEl.innerText = "RANK: " + rankInfo.title;
     rankEl.style.backgroundColor = rankInfo.color;
@@ -464,17 +482,20 @@ function showResult() {
 }
 
 function getRank(s) {
-    if (s >= 100) return { title: "GOD-TIER", desc: "(Tak tersentuh)", color: "#8e44ad" };
-    if (s >= 90)  return { title: "OVERLORD", desc: "(Mendominasi total)", color: "#c0392b" };
-    if (s >= 80)  return { title: "ELITE", desc: "(Kelas atas)", color: "#d35400" };
-    if (s >= 70)  return { title: "VETERAN", desc: "(Berpengalaman luas)", color: "#2980b9" };
-    if (s >= 60)  return { title: "SOLDIER", desc: "(Sesuai tugas)", color: "#27ae60" };
-    if (s >= 50)  return { title: "CIVILIAN", desc: "(Rata-rata/Umum)", color: "#16a085" };
-    if (s >= 40)  return { title: "OUTCAST", desc: "(Di bawah standar)", color: "#7f8c8d" };
-    if (s >= 30)  return { title: "NOVICE", desc: "(Pemula sekali)", color: "#95a5a6" };
-    if (s >= 20)  return { title: "SLAVE", desc: "(Hanya mengikuti tanpa pemahaman)", color: "#34495e" };
-    if (s >= 10)  return { title: "INFANT", desc: "(Baru lahir/Belum tahu apa-apa)", color: "#bdc3c7" };
-    return { title: "ASHES", desc: "(Tidak berharga/Sudah habis)", color: "#2c3e50" };
+    const ranks = {
+        100: {title: "GOD-TIER", desc: "Tak tersentuh", color: "#8e44ad"},
+        90: {title: "OVERLORD", desc: "Mendominasi total", color: "#c0392b"},
+        80: {title: "ELITE", desc: "Kelas atas", color: "#d35400"},
+        70: {title: "VETERAN", desc: "Berpengalaman luas", color: "#2980b9"},
+        60: {title: "SOLDIER", desc: "Sesuai tugas", color: "#27ae60"},
+        50: {title: "CIVILIAN", desc: "Rata-rata/Umum", color: "#16a085"},
+        40: {title: "OUTCAST", desc: "Di bawah standar", color: "#7f8c8d"},
+        30: {title: "NOVICE", desc: "Pemula sekali", color: "#95a5a6"},
+        20: {title: "SLAVE", desc: "Hanya mengikuti tanpa pemahaman", color: "#34495e"},
+        10: {title: "INFANT", desc: "Baru lahir/Belum tahu apa-apa", color: "#bdc3c7"},
+        0: {title: "ASHES", desc: "Tidak berharga/Sudah habis", color: "#2c3e50"}
+    };
+    return ranks[s] || ranks[0];
 }
 </script>
 
