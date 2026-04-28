@@ -6,124 +6,81 @@
     <title>The Equator</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
-    :root {
-        --primary-color: #3498db;
-        --accent-color: #2ecc71;
-        --locked-color: #95a5a6;
-        --bg-color: #f0f4f8; /* Warna background lebih soft */
-        --text-color: #2c3e50;
-        --card-bg: #ffffff;
-    }
+        :root {
+            --primary-color: #3498db;
+            --accent-color: #2ecc71;
+            --locked-color: #95a5a6;
+            --bg-color: #f4f7f6;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+        }
 
-    body { 
-        font-family: 'Poppins', sans-serif; 
-        background-color: var(--bg-color); 
-        color: var(--text-color); 
-        padding: 20px; 
-        display: flex; 
-        justify-content: center;
-        background-image: radial-gradient(#d1d9e6 1px, transparent 1px);
-        background-size: 20px 20px;
-    }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .hidden { display: none !important; }
+        h1 { text-align: center; color: var(--primary-color); }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
+        
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; font-family: 'Poppins'; }
+        label { font-weight: 600; font-size: 0.9rem; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        .level-box { padding: 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .unlocked { border-color: var(--accent-color); border-left: 8px solid var(--accent-color); background: white; }
+        .locked { background: #f9f9f9; color: var(--locked-color); opacity: 0.7; cursor: not-allowed; border: 1px solid #eee; }
+        
+        .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: 'Poppins'; }
 
-    .container { width: 100%; max-width: 800px; }
+        /* Gaya Tabel */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
 
-    /* Card Modern dengan Shadow Halus */
-    .card { 
-        background: var(--card-bg); 
-        border-radius: 20px; 
-        padding: 30px; 
-        box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
-        margin-bottom: 20px;
-        border: 1px solid rgba(255,255,255,0.8);
-    }
+        /* Gaya Game Matching yang Phone Friendly */
+        .game-container {
+            background: #fdfdfd;
+            border: 2px dashed var(--primary-color);
+            padding: 15px;
+            border-radius: 15px;
+            margin-top: 40px;
+        }
 
-    .hidden { display: none !important; }
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-    /* Judul Gradient */
-    h1 { 
-        text-align: center; 
-        font-weight: 800;
-        letter-spacing: -1px;
-        background: linear-gradient(135deg, #2980b9, #3498db);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
+        .game-column {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-    .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; font-size: 0.9rem; letter-spacing: 1px; }
+        .game-btn {
+            width: 100%;
+            min-height: 50px;
+            padding: 10px 5px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            font-family: 'Poppins';
+            font-size: 0.85rem;
+            transition: 0.3s;
+            word-wrap: break-word;
+        }
 
-    /* Input lebih bersih */
-    input, select { 
-        width: 100%; 
-        padding: 12px 15px; 
-        margin: 10px 0; 
-        border: 1.5px solid #e0e0e0; 
-        border-radius: 12px; 
-        font-family: 'Poppins';
-        transition: 0.3s;
-    }
-    input:focus { border-color: var(--primary-color); outline: none; box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1); }
+        @media (max-width: 400px) {
+            .game-btn { font-size: 0.75rem; padding: 8px 2px; }
+            .game-container { padding: 10px; }
+        }
 
-    /* Tombol Futuristik */
-    .btn-primary { 
-        width: 100%; 
-        padding: 16px; 
-        background: linear-gradient(135deg, #3498db, #2980b9); 
-        color: white; 
-        border: none; 
-        border-radius: 12px; 
-        font-weight: bold; 
-        cursor: pointer; 
-        margin-top: 10px;
-        transition: 0.3s;
-        box-shadow: 0 8px 15px rgba(52, 152, 219, 0.2);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(52, 152, 219, 0.3); }
-
-    /* Level Box UI */
-    .level-box { 
-        padding: 25px; 
-        border-radius: 15px; 
-        margin-bottom: 15px; 
-        cursor: pointer; 
-        transition: 0.3s;
-        border: 1px solid #eee;
-    }
-    .unlocked { 
-        background: #fff; 
-        border-left: 8px solid var(--accent-color); 
-        box-shadow: 0 5px 15px rgba(0,0,0,0.03);
-    }
-    .unlocked:hover { transform: scale(1.02); border-color: var(--accent-color); }
-    .locked { background: #fdfdfd; color: var(--locked-color); opacity: 0.7; cursor: not-allowed; filter: grayscale(1); }
-
-    .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: 'Poppins'; }
-
-    /* Tabel yang lebih rapi */
-    table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; border: 1px solid #eee; margin-bottom: 20px; }
-    th { background-color: #f8f9fa; color: var(--text-color); font-weight: 600; padding: 15px; text-align: left; border-bottom: 2px solid #eee; }
-    td { padding: 12px 15px; border-bottom: 1px solid #eee; background: #fff; }
-
-    /* Game Matching UI */
-    .game-container { background: #ffffff; border: 2px dashed #d0d7de; padding: 20px; border-radius: 20px; margin-top: 40px; }
-    .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-    .game-btn { 
-        width: 100%; min-height: 55px; padding: 10px; border: 1.5px solid #e0e0e0; 
-        border-radius: 12px; background: #fff; cursor: pointer; font-family: 'Poppins'; 
-        font-weight: 500; transition: 0.2s;
-    }
-    .selected { background: #ebf5ff; border-color: var(--primary-color); color: var(--primary-color); }
-    .correct { background: var(--accent-color) !important; color: white !important; border-color: var(--accent-color); }
-    .wrong { background: #fee2e2 !important; border-color: #ef4444; color: #b91c1c; }
-
-    /* Overlay Quiz */
-    #game-overlay { backdrop-filter: blur(5px); }
-
-    @keyframes popIn { 
-        0% { transform: scale(0.9); opacity: 0; } 
-        100% { transform: scale(1); opacity: 1; } 
-    }
-</style>
+        .selected { background: #d4e6f1; border-color: var(--primary-color); }
+        .correct { background: var(--accent-color) !important; color: white; border-color: var(--accent-color); }
+        .wrong { background: #f2d7d5 !important; border-color: #e74c3c; }
+    </style>
 </head>
 <body>
 
