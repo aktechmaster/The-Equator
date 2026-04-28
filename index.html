@@ -92,7 +92,6 @@
         <h2 style="font-size: 1.2rem; margin-bottom: 15px;">Mulai Petualanganmu!</h2>
         <input type="text" id="studentName" placeholder="Masukkan Nama">
         <input type="email" id="studentEmail" placeholder="Masukkan Email">
-        <input type="text" id="idSekolah" placeholder="Masukkan Nama Sekolah">
         
         <label for="classSelect">Pilih Kelas:</label>
         <select id="classSelect">
@@ -106,24 +105,20 @@
 
     <div id="material-section" class="card hidden">
         <h2>Halo, <span id="displayName"></span>! 👋</h2>
-<p style="margin-bottom: 20px;">Silakan pilih materi belajarmu:</p>
+        <p style="margin-bottom: 20px;">Silahkan pilih materi belajarmu:</p>
+        
+        <div class="level-box unlocked" onclick="goToComparative()">
+            <h3>🔓 Level A: Comparative</h3>
+            <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
+        </div>
 
-<div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
-    <div class="level-box locked">Chapter 1 | I Can Speak Five Languages</div>
-    <div class="level-box locked">Chapter 2 | I Play Golf on Weekends</div>
-    <div class="level-box locked">Chapter 3 | What are You Doing?</div>
-    <div class="level-box locked">Chapter 4 | We Went Camping Last Week</div>
-    <div class="level-box locked">Chapter 5 | What were They Doing?</div>
-    <div class="level-box locked">Chapter 6 | Let Me Tell You My Story</div>
-    
-    <div class="level-box unlocked" onclick="startComparative()" style="border-left: 8px solid #3498db;">
-        Chapter 7 | I'm Taller than You (Comparative)
-    </div>
-    
-    <div class="level-box locked">Chapter 8 | In a Faraway Kingdom</div>
+        <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
+    <h3>🔒 Level B: Superlative</h3>
+    <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
 </div>
-
-<button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; text-decoration: underline; margin-top: 20px;">Keluar / Ganti Nama</button>
+        
+        <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; text-decoration: underline; margin-top: 10px;">Keluar / Ganti Nama</button>
+    </div>
 
     <div id="comparative-page" class="card hidden">
             <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
@@ -264,6 +259,7 @@
 
 </div>
 
+</body>
 
 <style>
     @keyframes popIn {
@@ -326,10 +322,8 @@ window.onload = function() {
 function startMission() {
     const name = document.getElementById('studentName').value;
     const email = document.getElementById('studentEmail').value;
-    const sekolah = document.getElementById('idSekolah').value;
-    if (name.trim() !== "" && email.trim() !== "" && sekolah.trim() !== "") {
+    if (name.trim() !== "" && email.trim() !== "") {
         localStorage.setItem('studentName', name); 
-        localStorage.setItem('studentSekolah', sekolah);
         showMaterialPage(name);
     } else {
         alert("Mohon isi Nama dan Email terlebih dahulu ya!");
@@ -363,8 +357,8 @@ function goToComparative() {
 
 function backToMenu() {
     localStorage.removeItem('currentPage');
-    document.getElementById('comparative-page').classList.add('hidden'); // Sembunyikan materi
-    document.getElementById('material-section').classList.remove('hidden'); // Munculkan daftar chapter
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
 }
 
 function logout() {
@@ -577,22 +571,6 @@ function getRank(s) {
     function goToSuperlative() {
     alert("Selamat! Kamu masuk ke Level B: Superlative. (Halaman materi sedang disiapkan)");
     // Nanti di sini kamu bisa arahkan ke page baru seperti goToComparative()
-}
-
-    function startComparative() {
-    // 1. Sembunyikan menu daftar chapter
-    document.getElementById('material-section').classList.add('hidden');
-    
-    // 2. Munculkan section materi Comparative (ID-nya harus 'comparative-page')
-    const sectionMateri = document.getElementById('comparative-page'); 
-    
-    if (sectionMateri) {
-        sectionMateri.classList.remove('hidden');
-        localStorage.setItem('currentPage', 'comparative'); // Agar jika di-refresh tidak hilang
-        window.scrollTo(0,0); 
-    } else {
-        alert("Error: ID comparative-page tidak ditemukan!");
-    }
 }
     
 </script>
