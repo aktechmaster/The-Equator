@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Equator: Degree of Comparison</title>
-    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    
     <style>
-        /* --- CSS TETAP SAMA SEPERTI SEBELUMNYA --- */
         :root {
             --primary-color: #3498db;
             --accent-color: #2ecc71;
@@ -18,189 +15,122 @@
             --card-bg: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.6;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-        }
-
-        .container { width: 100%; max-width: 800px; margin-top: 20px; }
-        h1 { font-size: 2.2rem; color: var(--primary-color); text-align: center; margin-bottom: 5px; }
-        p.subtitle { text-align: center; color: #7f8c8d; font-size: 1rem; margin-bottom: 30px; }
-        h2 { font-size: 1.5rem; margin-bottom: 20px; color: var(--text-color); border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; display: inline-block; }
-
-        .card {
-            background-color: var(--card-bg);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-        }
-
-        #login-section { display: flex; flex-direction: column; gap: 15px; align-items: center; }
-
-        input[type="text"], input[type="email"], select {
-            width: 100%; max-width: 400px; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: 'Poppins', sans-serif;
-        }
-
-        button.btn-primary {
-            width: 100%; max-width: 400px; padding: 15px; background-color: var(--primary-color); color: #fff; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
-
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); padding: 20px; display: flex; justify-content: center; }
+        .container { width: 100%; max-width: 800px; }
+        .card { background: var(--card-bg); border-radius: 15px; padding: 30px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .hidden { display: none !important; }
-
-        .level-box {
-            display: block; width: 100%; text-align: left; background-color: var(--card-bg); border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 2px solid transparent; cursor: pointer; transition: all 0.3s ease;
-        }
-
-        .unlocked { border-color: var(--accent-color); border-left: 8px solid var(--accent-color); }
-        .locked { background-color: #f9f9f9; border-color: #e0e0e0; cursor: not-allowed; color: var(--locked-color); opacity: 0.7; }
+        h1 { text-align: center; color: var(--primary-color); }
+        .subtitle { text-align: center; color: #7f8c8d; margin-bottom: 30px; }
         
-        /* Tombol Logout (Opsional agar bisa balik ke login) */
-        .btn-logout { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 0.9rem; margin-top: 20px; text-decoration: underline; }
+        /* Input & Buttons */
+        input, select { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #eee; border-radius: 8px; }
+        .btn-primary { width: 100%; padding: 15px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        
+        /* Level Box */
+        .level-box { padding: 20px; border-radius: 12px; margin-bottom: 15px; cursor: pointer; border: 2px solid transparent; transition: 0.3s; }
+        .unlocked { border-color: var(--accent-color); border-left: 8px solid var(--accent-color); }
+        .locked { background: #f9f9f9; color: var(--locked-color); opacity: 0.7; cursor: not-allowed; }
+        
+        .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 10px; display: flex; align-items: center; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>The Equator 🚀</h1>
-        <p class="subtitle">English Quick & Active Tutor</p>
+<div class="container">
+    <h1>The Equator 🚀</h1>
+    <p class="subtitle">English Quick & Active Tutor</p>
 
-        <div id="login-section" class="card">
-            <h2 style="border: none; font-size: 1.2rem; margin-bottom: 5px;">Mulai Petualanganmu!</h2>
-            <input type="text" id="studentName" placeholder="Masukkan Nama" required>
-            <input type="email" id="studentEmail" placeholder="Masukkan Email" required>
-            
-            <label for="classSelect">Pilih Kelas:</label>
-            <select id="classSelect">
-                <option value="8" selected>Kelas 8 (Available)</option>
-            </select>
+    <div id="login-section" class="card">
+        <h2>Mulai Petualanganmu!</h2>
+        <input type="text" id="studentName" placeholder="Masukkan Nama">
+        <input type="email" id="studentEmail" placeholder="Masukkan Email">
+        <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
+    </div>
 
-            <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
+    <div id="material-section" class="card hidden">
+        <h2>Halo, <span id="displayName"></span>! 👋</h2>
+        <p>Pilih materimu:</p>
+        <div class="level-box unlocked" onclick="goToComparative()">
+            <h3>🔓 Level A: Comparative</h3>
+            <p>Membandingkan dua hal.</p>
         </div>
+        <div class="level-box locked" onclick="alert('Selesaikan Level A dulu!')">
+            <h3>🔒 Level B: Superlative</h3>
+            <p>Membandingkan lebih dari dua hal.</p>
+        </div>
+        <button onclick="logout()" style="color:red; background:none; border:none; cursor:pointer;">Keluar</button>
+    </div>
 
-        <div id="material-section" class="card hidden">
-            <h2>Halo, <span id="displayName"></span>! 👋</h2>
-            <p style="margin-bottom: 20px;">Silahkan pilih materi belajarmu:</p>
-            
-            <div class="level-box unlocked" onclick="goToComparative()">
-                <h3>🔓 Level A: Comparative</h3>
-                <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
+    <div id="comparative-page" class="card hidden">
+        <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
+        <h2>Level A: Comparative Degree</h2>
+        <div style="margin-top:20px; text-align: left;">
+            <p>Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
+            <ul style="margin: 15px 0 15px 20px;">
+                <li><b>Short adj:</b> Fast + er = Faster</li>
+                <li><b>Long adj:</b> More + Beautiful</li>
+            </ul>
+            <div style="background:#f0f7ff; padding:15px; border-left:4px solid var(--primary-color);">
+                <i>Contoh: My car is <b>faster</b> than yours.</i>
             </div>
-
-            <div class="level-box locked" onclick="alert('Selesaikan Level A dulu!')">
-                <h3>🔒 Level B: Superlative</h3>
-                <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
-            </div>
-
-             <div id="material-section" class="card hidden">
-            <h2>Halo, <span id="displayName"></span>! 👋</h2>
-            <p style="margin-bottom: 20px;">Silahkan pilih materi belajarmu:</p>
-            
-            <div class="level-box unlocked" onclick="goToComparative()">
-                <h3>🔓 Level A: Comparative</h3>
-                <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
-
-                <div id="comparative-page" class="card hidden">
-    <button onclick="backToMenu()" style="background: none; border: none; color: var(--primary-color); cursor: pointer; margin-bottom: 15px;">← Kembali ke Menu</button>
-    
-    <h2>Level A: Comparative Degree</h2>
-    <div style="text-align: left; margin-top: 20px;">
-        <p>Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
-        <br>
-        <p><b>Rumus Singkat:</b></p>
-        <ul style="margin-left: 20px; margin-top: 10px;">
-            <li>1 Suku Kata: <i>Adjective + <b>-er</b></i> (Contoh: Tall → Taller)</li>
-            <li>2+ Suku Kata: <i><b>More</b> + Adjective</i> (Contoh: Expensive → More Expensive)</li>
-        </ul>
-        <br>
-        <div style="background: #eef2f3; padding: 15px; border-radius: 8px;">
-            <i>Contoh: "The Cheetah is <b>faster</b> than the Lion."</i>
         </div>
     </div>
 </div>
 
-            <button class="btn-logout" onclick="logout()">Keluar / Ganti Nama</button>
-        </div>
-    </div>
+<script>
+    // CEK STATUS SAAT REFRESH
+    window.onload = function() {
+        const savedName = localStorage.getItem('isLoggedIn');
+        const lastPage = localStorage.getItem('currentPage');
 
-    <script>
-        // 1. FUNGSI CEK STATUS SAAT HALAMAN DIBUKA
-        window.onload = function() {
-            const savedName = localStorage.getItem('isLoggedIn');
-            if (savedName) {
-                showMaterialPage(savedName);
-            }
-        };
-
-        function startMission() {
-            const name = document.getElementById('studentName').value;
-            const email = document.getElementById('studentEmail').value;
-
-            if (name.trim() !== "" && email.trim() !== "") {
-                // 2. SIMPAN KE LOCALSTORAGE
-                localStorage.setItem('isLoggedIn', name);
-                
-                showMaterialPage(name);
-            } else {
-                alert("Mohon isi Nama Lengkap dan Email terlebih dahulu ya!");
+        if (savedName) {
+            // Jika sudah login, tampilkan menu utama
+            showMaterialPage(savedName);
+            
+            // Jika posisi terakhir ada di halaman materi, buka halaman itu
+            if (lastPage === 'comparative') {
+                goToComparative();
             }
         }
+    };
 
-        // Fungsi untuk menampilkan halaman materi
-        function showMaterialPage(name) {
-            document.getElementById('login-section').classList.add('hidden');
-            document.getElementById('material-section').classList.remove('hidden');
-            document.getElementById('displayName').innerText = name;
-        }
-
-        // 3. FUNGSI LOGOUT (MENGHAPUS MEMORI)
-        function logout() {
-            localStorage.removeItem('isLoggedIn');
-            location.reload(); // Refresh halaman untuk kembali ke login
-        }
-
-        // Fungsi masuk ke halaman materi
-function goToComparative() {
-    // Sembunyikan menu materi
-    document.getElementById('material-section').classList.add('hidden');
-    // Tampilkan halaman pembelajaran
-    document.getElementById('comparative-page').classList.remove('hidden');
-    
-    // Simpan status ke localStorage agar jika refresh tetap di halaman materi
-    localStorage.setItem('currentPage', 'comparative');
-}
-
-// Fungsi kembali ke menu utama
-function backToMenu() {
-    document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('material-section').classList.remove('hidden');
-    
-    // Update status di localStorage
-    localStorage.removeItem('currentPage');
-}
-
-// UPDATE fungsi window.onload yang lama
-window.onload = function() {
-    const savedName = localStorage.getItem('isLoggedIn');
-    const lastPage = localStorage.getItem('currentPage');
-
-    if (savedName) {
-        showMaterialPage(savedName);
-        
-        // Jika sebelumnya sedang buka materi comparative, langsung arahkan ke sana
-        if (lastPage === 'comparative') {
-            goToComparative();
+    function startMission() {
+        const name = document.getElementById('studentName').value;
+        if (name.trim() !== "") {
+            localStorage.setItem('isLoggedIn', name);
+            showMaterialPage(name);
+        } else {
+            alert("Isi nama dulu ya!");
         }
     }
-};
-    </script>
+
+    function showMaterialPage(name) {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('material-section').classList.remove('hidden');
+        document.getElementById('comparative-page').classList.add('hidden'); // Pastikan materi tertutup
+        document.getElementById('displayName').innerText = name;
+    }
+
+    function goToComparative() {
+        document.getElementById('material-section').classList.add('hidden');
+        document.getElementById('comparative-page').classList.remove('hidden');
+        localStorage.setItem('currentPage', 'comparative');
+    }
+
+    function backToMenu() {
+        // Hapus jejak halaman terakhir agar tidak kembali ke sini saat refresh
+        localStorage.removeItem('currentPage');
+        
+        // Sembunyikan halaman materi, tampilkan menu
+        document.getElementById('comparative-page').classList.add('hidden');
+        document.getElementById('material-section').classList.remove('hidden');
+    }
+
+    function logout() {
+        localStorage.clear();
+        location.reload();
+    }
+</script>
 
 </body>
 </html>
