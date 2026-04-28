@@ -280,16 +280,30 @@
 
     // 3. Fungsi Load Otomatis (Biar Refresh Nggak Balik ke Awal)
     window.onload = function() {
-        const savedName = localStorage.getItem('isLoggedIn');
-        const lastPage = localStorage.getItem('currentPage');
+    const status = localStorage.getItem('examStatus');
+    const savedName = localStorage.getItem('isLoggedIn');
+    const lastPage = localStorage.getItem('currentPage');
 
-        if (savedName) {
+    // JIKA USER SUDAH LOGIN
+    if (savedName) {
+        // PERINTAH PENTING: Sembunyikan kotak login segera!
+        document.getElementById('login-section').classList.add('hidden');
+
+        // Cek apakah dia kabur saat ujian (Anti-Refresh)
+        if (status === 'on-progress') {
+            showMaterialPage(savedName); // Siapkan data nama
+            startRealQuiz();            // Paksa masuk ke lembar soal
+            alert("Melanjutkan ujian yang belum selesai...");
+        } 
+        // Jika tidak sedang ujian, cek halaman terakhirnya di mana
+        else {
             showMaterialPage(savedName);
             if (lastPage === 'comparative') {
                 goToComparative();
             }
         }
-    };
+    }
+};
 
     function startMission() {
     const name = document.getElementById('studentName').value;
@@ -412,34 +426,49 @@ const questions = [
 let userAnswers = {};
 
 function startRealQuiz() {
-    markExamAsStarted(); // <-- TAMBAHKAN BARIS INI (Sangat Penting)
-    document.getElementById('game-overlay').classList.add('hidden');
+    markExamAsStarted();
+    
+    // Sembunyikan SEMUA halaman selain kuis
+    document.getElementById('login-section').classList.add('hidden');
+    document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('game-overlay').classList.add('hidden');
+    
+    // Tampilkan hanya halaman kuis
     document.getElementById('quiz-page').classList.remove('hidden');
     
+    // Render ulang soal agar tidak kosong setelah refresh
+    renderQuizSoal(); 
+}
+
+// Pisahkan fungsi render agar bisa dipanggil ulang saat refresh
+function renderQuizSoal() {
     const container = document.getElementById('quiz-list-container');
     container.innerHTML = ''; 
 
     questions.forEach((q, qIdx) => {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 25px; padding: 15px; border: 1px solid #eee; border-radius: 10px; background: #fafafa;";
-        
         qDiv.innerHTML = `<p style="font-weight: bold; margin-bottom: 12px; color: #333;">${q.q}</p>`;
         
         const optDiv = document.createElement('div');
-        optDiv.style.display = "grid";
-        optDiv.style.gap = "10px";
+        optDiv.style.display = "grid"; optDiv.style.gap = "10px";
         
         q.options.forEach((opt, oIdx) => {
             const btn = document.createElement('button');
-            // Kita pakai style manual agar tidak bentrok dengan CSS luar
-            btn.style.cssText = "padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; transition: 0.3s; color: #333;";
+            btn.style.cssText = "padding: 12px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer; text-align: left; font-size: 0.95rem; color: #333;";
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
+            
+            // Jika user refresh, tandai lagi jawaban yang sudah pernah dipilih (Optional tapi bagus)
+            if (userAnswers[qIdx] === oIdx) {
+                btn.style.backgroundColor = "#3498db";
+                btn.style.color = "white";
+            }
+
             btn.onclick = () => selectOption(qIdx, oIdx);
             optDiv.appendChild(btn);
         });
-        
         qDiv.appendChild(optDiv);
         container.appendChild(qDiv);
     });
