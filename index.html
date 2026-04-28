@@ -3,15 +3,202 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misi: Degrees of Comparison</title>
-    <link rel="stylesheet" href="style.css">
+    <title>E-COMPASS: Degree of Comparison</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- BAGIAN CSS (DESAIN TAMPILAN) --- */
+        :root {
+            --primary-color: #3498db;      /* Biru Modern */
+            --accent-color: #2ecc71;       /* Hijau Sukses */
+            --locked-color: #95a5a6;       /* Abu-abu Terkunci */
+            --bg-color: #f4f7f6;           /* Abu-abu Sangat Muda untuk Latar */
+            --text-color: #2c3e50;         /* Biru Tua/Hitam untuk Teks */
+            --card-bg: #ffffff;            /* Putih untuk Card */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        /* --- FORM LOGIN --- */
+        #login-section {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        label {
+            font-weight: 600;
+            color: #34495e;
+            margin-top: 10px;
+        }
+
+        button.btn-primary {
+            width: 100%;
+            max-width: 400px;
+            padding: 15px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            margin-top: 10px;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        button.btn-primary:hover {
+            background-color: #2980b9;
+        }
+
+        button.btn-primary:active {
+            transform: translateY(2px);
+        }
+
+        /* --- MENU MATERI --- */
+        .hidden {
+            display: none !important;
+        }
+
+        #material-section {
+            text-align: center;
+        }
+
+        .level-box {
+            display: block;
+            width: 100%;
+            text-align: left;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .unlocked {
+            border-color: var(--accent-color);
+            border-left: 8px solid var(--accent-color);
+        }
+
+        .unlocked h3 {
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+
+        .unlocked:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.2);
+        }
+
+        .locked {
+            background-color: #f9f9f9;
+            border-color: #e0e0e0;
+            cursor: not-allowed;
+            color: var(--locked-color);
+            opacity: 0.7;
+        }
+
+        .locked h3 {
+            color: var(--locked-color);
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .card { padding: 20px; }
+        }
+    </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Selamat Datang di Misi Belajar! 🚀</h1>
-        <p>Silakan daftar untuk memulai petualanganmu.</p>
+        <h1>E-COMPASS 🚀</h1>
+        <p class="subtitle">English Comparative & Superlative System</p>
 
         <div id="login-section" class="card">
+            <h2 style="border: none; font-size: 1.2rem; margin-bottom: 5px;">Mulai Petualanganmu!</h2>
+            
             <input type="text" id="studentName" placeholder="Masukkan Nama Lengkap" required>
             <input type="email" id="studentEmail" placeholder="Masukkan Email" required>
             
@@ -22,24 +209,50 @@
                 <option value="9" disabled>Kelas 9 (Belum Tersedia)</option>
             </select>
 
-            <button onclick="startMission()">Mulai Misi</button>
+            <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
         </div>
 
         <div id="material-section" class="card hidden">
-            <h2>Materi: Degree of Comparison</h2>
+            <h2>Pilih Materi</h2>
             
             <div class="level-box unlocked" onclick="goToComparative()">
                 <h3>🔓 Level A: Comparative</h3>
                 <p>Belajar membandingkan DUA hal (Lebih... daripada...)</p>
             </div>
 
-            <div class="level-box locked" onclick="alert('Selesaikan Level A dulu ya!')">
+            <div class="level-box locked" onclick="alert('Kamu harus menyelesaikan Level A dan lulus kuis terlebih dahulu untuk membuka gembok ini!')">
                 <h3>🔒 Level B: Superlative</h3>
-                <p>Belajar membandingkan TIGA hal/lebih (Paling...)</p>
+                <p>Belajar membandingkan TIGA hal atau lebih (Paling...)</p>
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        function startMission() {
+            // Mengambil data dari inputan
+            const name = document.getElementById('studentName').value;
+            const email = document.getElementById('studentEmail').value;
+
+            // Mengecek apakah nama dan email sudah diisi
+            if (name.trim() !== "" && email.trim() !== "") {
+                // Sembunyikan form login
+                document.getElementById('login-section').classList.add('hidden');
+                
+                // Tampilkan menu materi
+                document.getElementById('material-section').classList.remove('hidden');
+                
+                // (Nanti di sini kita akan tambahkan kode untuk mengirim nama/email ke Google Sheets)
+            } else {
+                // Peringatan jika ada yang kosong
+                alert("Mohon isi Nama Lengkap dan Email terlebih dahulu ya!");
+            }
+        }
+
+        function goToComparative() {
+            alert("Bagus! Kamu siap masuk ke materi Comparative. (Halaman materi akan segera kita buat!)");
+            // Nanti di sini kita arahkan ke halaman materi yang sebenarnya
+        }
+    </script>
+
 </body>
 </html>
