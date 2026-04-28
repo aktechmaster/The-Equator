@@ -243,6 +243,15 @@
 </style>
 
 <script>
+    
+    // Tambahkan audio (Gunakan link URL atau file lokal kamu)
+const soundCorrect = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3'); 
+const soundWrong = new Audio('https://assets.mixkit.co/active_storage/sfx/2018/2018-preview.mp3');
+
+// Mengatur volume (opsional, 0.0 sampai 1.0)
+soundCorrect.volume = 0.5;
+soundWrong.volume = 0.5;
+    
     // DEKLARASI VARIABEL PENTING AGAR BISA DIKLIK
     let selectedAdj = null;
     let selectedComp = null;
@@ -310,6 +319,8 @@
 
         if (selectedAdj && selectedComp) {
             if (selectedAdj.dataset.pair === selectedComp.dataset.pair) {
+                // JAWABAN BENAR
+                soundCorrect.play(); // <--- TAMBAHKAN INI
                 selectedAdj.classList.add('correct');
                 selectedComp.classList.add('correct');
                 selectedAdj.disabled = true;
@@ -320,6 +331,8 @@
                     setTimeout(showAppreciation, 500);
                 }
             } else {
+                // JAWABAN SALAH
+                soundWrong.play(); // <--- TAMBAHKAN INI
                 selectedAdj.classList.add('wrong');
                 selectedComp.classList.add('wrong');
                 let a = selectedAdj; let c = selectedComp;
