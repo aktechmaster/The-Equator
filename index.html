@@ -32,34 +32,49 @@
         
         .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: bold; margin-bottom: 15px; font-family: 'Poppins'; }
 
-        /* Gaya untuk Game Matching */
+        /* Gaya Game Matching yang Phone Friendly */
 .game-container {
     background: #fdfdfd;
     border: 2px dashed var(--primary-color);
-    padding: 20px;
+    padding: 15px;
     border-radius: 15px;
     margin-top: 40px;
 }
+
+/* Menggunakan Grid agar otomatis menyesuaikan layar */
 .game-grid {
-    display: flex;
-    justify-content: space-around;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Membagi 2 kolom sama rata */
+    gap: 10px;
     margin-top: 20px;
 }
+
 .game-column {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
+
 .game-btn {
-    padding: 10px 20px;
+    width: 100%; /* Tombol memenuhi lebar kolom */
+    min-height: 50px; /* Biar enak ditekan jari di HP */
+    padding: 10px 5px;
     border: 2px solid #ddd;
-    border-radius: 8px;
+    border-radius: 10px;
     background: white;
     cursor: pointer;
     font-family: 'Poppins';
+    font-size: 0.85rem; /* Ukuran teks pas untuk HP */
     transition: 0.3s;
+    word-wrap: break-word; /* Biar teks panjang seperti More Expensive tidak keluar kotak */
 }
-.game-btn:hover { border-color: var(--primary-color); }
+
+/* Responsif untuk layar sangat kecil */
+@media (max-width: 400px) {
+    .game-btn { font-size: 0.75rem; padding: 8px 2px; }
+    .game-container { padding: 10px; }
+}
+
 .selected { background: #d4e6f1; border-color: var(--primary-color); }
 .correct { background: var(--accent-color) !important; color: white; border-color: var(--accent-color); }
 .wrong { background: #f2d7d5 !important; border-color: #e74c3c; }
@@ -182,26 +197,26 @@
                     <tr><td>Far</td><td><b>Farther / Further</b></td><td>Lebih Jauh</td></tr>
                 </table>
 
-                <div class="game-container">
-    <h3 style="text-align: center; color: var(--primary-color);">🎮 Mini Game: Match the Pairs!</h3>
-    <p style="text-align: center; font-size: 0.8rem;">Klik satu kata di kiri, lalu klik pasangannya di kanan!</p>
+                <<div class="game-container">
+    <h3 style="text-align: center; color: var(--primary-color); font-size: 1.1rem;">🎮 Match the Pairs!</h3>
+    <p style="text-align: center; font-size: 0.75rem; margin-bottom: 10px;">Klik kata sifat di kiri, lalu pasangannya di kanan!</p>
     
     <div class="game-grid">
-        <div class="game-column" id="adj-col">
+        <div class="game-column">
             <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="1">Fast</button>
             <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="2">Expensive</button>
             <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="3">Good</button>
             <button class="game-btn" onclick="selectWord(this, 'adj')" data-pair="4">Big</button>
         </div>
         
-        <div class="game-column" id="comp-col">
+        <div class="game-column">
             <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="3">Better</button>
             <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="1">Faster</button>
             <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="4">Bigger</button>
             <button class="game-btn" onclick="selectWord(this, 'comp')" data-pair="2">More Expensive</button>
         </div>
     </div>
-    <div id="game-message" style="text-align: center; margin-top: 15px; font-weight: bold; color: var(--accent-color);"></div>
+    <div id="game-message" style="text-align: center; margin-top: 15px; font-size: 0.9rem; min-height: 20px; font-weight: bold; color: var(--accent-color);"></div>
 </div>
             </div>
         </div>
