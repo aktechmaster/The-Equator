@@ -163,6 +163,24 @@
         .selected { background: #e3f2fd; border-color: var(--primary-color); color: var(--primary-color); transform: scale(1.02); }
         .correct { background: var(--accent-color) !important; color: white !important; border-color: var(--accent-color); transform: scale(1); box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);}
         .wrong { background: #fadbd8 !important; border-color: #e74c3c; color: #c0392b;}
+
+        .main-btn {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.main-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+        
     </style>
 </head>
 <body>
@@ -465,6 +483,24 @@
     </div>
 </div>
 
+    <div id="result-page" class="hidden card">
+    </div>
+
+<div id="tips-page" class="hidden card" style="text-align: center; padding: 30px;">
+    <h2 style="color: #e67e22;">💡 Tips Final Boss</h2>
+    <p>Hati-hati! Di level ini, soal Comparative (than) dan Superlative (the) akan muncul secara acak.</p>
+    <div style="text-align: left; background: #fff3e0; padding: 15px; border-radius: 10px; margin: 20px 0;">
+        <ul style="margin: 0; padding-left: 20px;">
+            <li style="margin-bottom: 10px;">Jika ada kata <b>"than"</b>, gunakan Comparative (-er / more).</li>
+            <li>Jika ada kata <b>"the"</b> di depan, gunakan Superlative (-est / most).</li>
+        </ul>
+    </div>
+    <button onclick="startFinalBoss()" class="main-btn" style="background: #e67e22;">SAYA PAHAM, MULAI FINAL BOSS!</button>
+</div>
+
+<div id="quiz-page" class="hidden card">
+    </div>
+
 <style>
     @keyframes popIn {
         0% { transform: scale(0.5); opacity: 0; }
@@ -483,32 +519,33 @@ let selectedComp = null;
 let solvedPairs = 0;
 const totalPairs = 4;
 let userAnswers = {};
-let currentQuizType = 'comparative'; // Penanda default
+let currentQuizType = 'comparative'; 
+let finalBossQuestions = []; // Wadah untuk soal campuran
 
 const questions = [
-    { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
-    { q: "2. The task was ... than I thought it would be.", options: ["Difficulter", "More difficult", "Most difficult", "As difficult"], a: 1 },
-    { q: "3. My new teacher is ... than the previous one.", options: ["Patienter", "More patient", "Most patient", "Patiently"], a: 1 },
-    { q: "4. Your score is ... than mine, you should study harder.", options: ["Badder", "Worst", "Worse", "More bad"], a: 2 },
-    { q: "5. A city is usually ... than a small village.", options: ["Crowdeder", "More crowded", "Most crowded", "Crowded"], a: 1 },
-    { q: "6. Gold is ... than silver.", options: ["Expensiver", "More expensive", "Most expensive", "Expensive"], a: 1 },
-    { q: "7. This exercise is ... than the one we did yesterday.", options: ["Easier", "More easy", "Easyer", "Most easy"], a: 0 },
-    { q: "8. He looks ... than his older brother.", options: ["Handsome", "More handsome", "Handsomer", "Most handsome"], a: 1 },
-    { q: "9. The red bag is ... than the blue one.", options: ["Gooder", "Better", "Best", "More good"], a: 1 },
-    { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
+    { q: "Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
+    { q: "The task was ... than I thought it would be.", options: ["Difficulter", "More difficult", "Most difficult", "As difficult"], a: 1 },
+    { q: "My new teacher is ... than the previous one.", options: ["Patienter", "More patient", "Most patient", "Patiently"], a: 1 },
+    { q: "Your score is ... than mine, you should study harder.", options: ["Badder", "Worst", "Worse", "More bad"], a: 2 },
+    { q: "A city is usually ... than a small village.", options: ["Crowdeder", "More crowded", "Most crowded", "Crowded"], a: 1 },
+    { q: "Gold is ... than silver.", options: ["Expensiver", "More expensive", "Most expensive", "Expensive"], a: 1 },
+    { q: "This exercise is ... than the one we did yesterday.", options: ["Easier", "More easy", "Easyer", "Most easy"], a: 0 },
+    { q: "He looks ... than his older brother.", options: ["Handsome", "More handsome", "Handsomer", "Most handsome"], a: 1 },
+    { q: "The red bag is ... than the blue one.", options: ["Gooder", "Better", "Best", "More good"], a: 1 },
+    { q: "This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
 ];
 
 const superlativeQuestions = [
-    { q: "1. Mount Everest is The ... mountain in the world.", options: ["Higher", "Higher", "Highest", "Most high"], a: 2 },
-    { q: "2. Who is The ... student in your class?", options: ["Most diligent", "Diligentest", "Diligentest", "More diligent"], a: 0 },
-    { q: "3. This is The ... movie I have ever watched.", options: ["Worse", "Baddest", "worst", "Worstest"], a: 2 },
-    { q: "4. Jupiter is The ... planet in our solar system.", options: ["Most big", "Biggest", "Bigger", "Bigest"], a: 1 },
-    { q: "5. For many people, Italian food is The ... in the world.", options: ["Deliciousest", "More delicious", "Most delicious", "Delicious"], a: 2 },
-    { q: "6. Cheetah is The ... land animal on Earth.", options: ["Fastest", "Most fast", "Most Fastest", "More fast"], a: 0 },
-    { q: "7. It was The ... day of my life! I'm so happy.", options: ["goodest", "best", "most good", "better"], a: 1 },
-    { q: "8. Buying a diamond ring is The ... way to spend money.", options: ["Expensivest", "More expensive", "Most expensive", "Most expensiver"], a: 2 },
-    { q: "9. This is The ... room in the house; it gets no sunlight.", options: ["Most dark", "Darker", "Darkest", "Dark"], a: 2 },
-    { q: "10. He is The ... person I know; he always makes me laugh.", options: ["Most funny", "Funniest", "Funnyest", "Funnier"], a: 1 }
+    { q: "Mount Everest is The ... mountain in the world.", options: ["Higher", "Higher", "Highest", "Most high"], a: 2 },
+    { q: "Who is The ... student in your class?", options: ["Most diligent", "Diligentest", "Diligentest", "More diligent"], a: 0 },
+    { q: "This is The ... movie I have ever watched.", options: ["Worse", "Baddest", "worst", "Worstest"], a: 2 },
+    { q: "Jupiter is The ... planet in our solar system.", options: ["Most big", "Biggest", "Bigger", "Bigest"], a: 1 },
+    { q: "For many people, Italian food is The ... in the world.", options: ["Deliciousest", "More delicious", "Most delicious", "Delicious"], a: 2 },
+    { q: "Cheetah is The ... land animal on Earth.", options: ["Fastest", "Most fast", "Most Fastest", "More fast"], a: 0 },
+    { q: "It was The ... day of my life! I'm so happy.", options: ["goodest", "best", "most good", "better"], a: 1 },
+    { q: "Buying a diamond ring is The ... way to spend money.", options: ["Expensivest", "More expensive", "Most expensive", "Most expensiver"], a: 2 },
+    { q: "This is The ... room in the house; it gets no sunlight.", options: ["Most dark", "Darker", "Darkest", "Dark"], a: 2 },
+    { q: "He is The ... person I know; he always makes me laugh.", options: ["Most funny", "Funniest", "Funnyest", "Funnier"], a: 1 }
 ];
 
 // --- SISTEM PENYELAMAT DATA ---
@@ -523,6 +560,7 @@ window.onload = function() {
         document.getElementById('displayName').innerText = savedName;
 
         if (examStatus === 'on-progress') {
+            if(lastType === 'final') prepareFinalBoss(); // Siapkan soal jika refresh di boss
             startRealQuiz(lastType);
             alert("Melanjutkan ujian yang belum selesai...");
         } else if (currentPage === 'comparative') {
@@ -556,6 +594,7 @@ function showMaterialPage(name) {
     document.getElementById('chapter-menu-page').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('superlative-page').classList.add('hidden'); 
+    document.getElementById('tips-page')?.classList.add('hidden'); // Sembunyikan tips jika ada
     document.getElementById('displayName').innerText = name;
 
     const savedSchool = localStorage.getItem('schoolName');
@@ -595,7 +634,6 @@ function startComparativeMateri() {
     window.scrollTo(0,0);
 }
 
-// PERBAIKAN DI SINI: Menyambungkan startSuperlativeQuiz ke startRealQuiz
 function startSuperlativeQuiz() {
     startRealQuiz('superlative'); 
 }
@@ -652,12 +690,28 @@ function selectWord(btn, type) {
 function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
 function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
+// FUNGSI BARU: ACAK SOAL FINAL BOSS
+function prepareFinalBoss() {
+    const combined = [...questions, ...superlativeQuestions];
+    // Acak semua soal
+    finalBossQuestions = combined.sort(() => Math.random() - 0.5).slice(0, 10);
+}
+
 function startRealQuiz(type = 'comparative') {
     markExamAsStarted();
-    currentQuizType = type; // Set global variabel tipe kuis
+    currentQuizType = type; 
     localStorage.setItem('currentQuizType', type);
 
-    const activeQuestions = (type === 'superlative') ? superlativeQuestions : questions;
+    // Pilih data soal
+    let activeQuestions;
+    if (type === 'superlative') {
+        activeQuestions = superlativeQuestions;
+    } else if (type === 'final') {
+        activeQuestions = finalBossQuestions;
+    } else {
+        activeQuestions = questions;
+    }
+
     userAnswers = {};
     localStorage.removeItem('savedAnswers');
 
@@ -666,10 +720,15 @@ function startRealQuiz(type = 'comparative') {
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('superlative-page').classList.add('hidden'); 
+    document.getElementById('tips-page')?.classList.add('hidden');
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     
-    document.querySelector('#quiz-page h2').innerText = (type === 'superlative') ? "EXAM: SUPERLATIVE" : "EXAM: COMPARATIVE";
+    // Judul Dinamis
+    let quizTitle = "EXAM: COMPARATIVE";
+    if(type === 'superlative') quizTitle = "EXAM: SUPERLATIVE";
+    if(type === 'final') quizTitle = "🔥 FINAL BOSS: MIXED 🔥";
+    document.querySelector('#quiz-page h2').innerText = quizTitle;
 
     const container = document.getElementById('quiz-list-container');
     container.innerHTML = ''; 
@@ -677,7 +736,10 @@ function startRealQuiz(type = 'comparative') {
     activeQuestions.forEach((q, qIdx) => {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 30px; padding: 20px; border-radius: 12px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;";
-        qDiv.innerHTML = `<p style="font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; color: #2c3e50;">${q.q}</p>`;
+        
+        // Hapus nomor lama dari string agar tidak dobel nomor
+        const cleanText = q.q.replace(/^\d+\.\s*/, '');
+        qDiv.innerHTML = `<p style="font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; color: #2c3e50;">${qIdx + 1}. ${cleanText}</p>`;
         
         const optDiv = document.createElement('div');
         optDiv.style.display = "grid"; 
@@ -689,7 +751,6 @@ function startRealQuiz(type = 'comparative') {
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
             
-            // Hover effect asli kamu
             btn.onmouseover = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#3498db"; }
             btn.onmouseout = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#eaeded"; }
 
@@ -735,7 +796,7 @@ function submitScrollQuiz() {
     localStorage.removeItem('savedAnswers');
 
     let finalScore = 0;
-    const currentData = (currentQuizType === 'superlative') ? superlativeQuestions : questions;
+    const currentData = (currentQuizType === 'superlative') ? superlativeQuestions : (currentQuizType === 'final' ? finalBossQuestions : questions);
 
     currentData.forEach((q, index) => { 
         if (userAnswers[index] === q.a) finalScore += 10; 
@@ -749,8 +810,12 @@ function submitScrollQuiz() {
             localStorage.setItem('levelB_unlocked', 'true');
             finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
             finishBtn.onclick = function() { location.reload(); };
+        } else if (currentQuizType === 'superlative') {
+            // ALUR BARU: MASUK KE TIPS
+            finishBtn.innerText = "⚡ LIHAT TIPS FINAL BOSS";
+            finishBtn.onclick = function() { showTipsPage(); };
         } else {
-            finishBtn.innerText = "🏆 KAMU MASTER COMPARISON!";
+            finishBtn.innerText = "🏆 KAMU RAJA COMPARISON!";
             finishBtn.onclick = function() {
                 showMaterialPage(localStorage.getItem('studentName'));
                 document.getElementById('result-page').classList.add('hidden');
@@ -772,6 +837,19 @@ function submitScrollQuiz() {
     document.getElementById('rank-desc').innerText = rankInfo.desc;
     
     window.scrollTo(0, 0);
+}
+
+// FUNGSI BARU: HALAMAN TIPS
+function showTipsPage() {
+    document.getElementById('result-page').classList.add('hidden');
+    document.getElementById('tips-page').classList.remove('hidden');
+    window.scrollTo(0,0);
+}
+
+// FUNGSI BARU: MULAI FINAL BOSS
+function startFinalBoss() {
+    prepareFinalBoss();
+    startRealQuiz('final');
 }
 
 function getRank(s) {
