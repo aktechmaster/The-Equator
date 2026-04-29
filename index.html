@@ -185,9 +185,12 @@
         </select>
 
         <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
-    </div>
+    </div> <div id="material-section" class="card hidden">
+        
+        <h2 style="font-size: 1.3rem; margin-bottom: 5px; color: var(--text-color);">Halo, <span id="displayName" style="color: var(--primary-color);">Siswa</span>!</h2>
+        <p style="margin-top: 0; margin-bottom: 20px; font-size: 0.9rem; color: #7f8c8d;">Asal Sekolah: <span id="displaySchool" style="font-weight: 600;">-</span></p>
 
-    <p style="margin-bottom: 25px; color: #7f8c8d;">Silahkan pilih materi belajarmu hari ini:</p>
+        <p style="margin-bottom: 25px; color: #7f8c8d;">Silahkan pilih materi belajarmu hari ini:</p>
         
         <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
             <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
@@ -217,44 +220,42 @@
                 🔒 Chapter 8 | In a Faraway Kingdom
             </div>
         </div>
-        <div style="text-align: center; margin-top: 25px;">
         
         <div style="text-align: center; margin-top: 25px;">
             <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; font-weight: 600; font-family: 'Poppins'; transition: 0.3s; padding: 5px 15px; border-radius: 5px;">⏏ Keluar / Ganti Akun</button>
         </div>
     </div>
-
     <div id="comparative-page" class="card hidden">
-            <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
-            <h2 style="border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 20px;">Level A: Comparative Degree <br><span style="color: #e74c3c; font-size: 1.1rem; font-weight: normal;">(Lebih .... Dari pada ....)</span></h2>
+        <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
+        <h2 style="border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 20px;">Level A: Comparative Degree <br><span style="color: #e74c3c; font-size: 1.1rem; font-weight: normal;">(Lebih .... Dari pada ....)</span></h2>
+        
+        <div>
+            <p style="font-size: 1.05rem;">Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
             
-            <div>
-                <p style="font-size: 1.05rem;">Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
-                
-                <div style="background: #fff8e1; border-left: 5px solid #f1c40f; padding: 15px; border-radius: 8px; margin-top: 20px;">
-                    <p style="margin:0; font-weight: 600;">📌 Catatan Pola:</p>
-                    <ul style="margin-left: 20px; margin-top: 10px; margin-bottom: 0;">
-                        <li>1 Suku Kata: <i>Adjective + <b>er</b></i> <br><span style="color:#777; font-size:0.9rem;">(Contoh: Fast + <b>er</b> --> Faster)</span></li>
-                        <li style="margin-top:10px;">2+ Suku Kata: <i><b>More</b> + Adjective</i> <br><span style="color:#777; font-size:0.9rem;">(Contoh: <b>More</b> + Beautiful ---> More Beautiful)</span></li>
-                    </ul>
-                </div>
-                <br>
-                
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="cheetah.png" alt="Cheetah Racing" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-                </div>
-                
-                <div style="background: #eef2f3; padding: 15px 20px; border-radius: 10px; border-left: 6px solid var(--primary-color); margin-bottom: 40px;">
-                    <i style="font-size: 1.05rem; line-height: 1.6;">Contoh: <br>"The Cheetah is <span style="color: #e74c3c;"><b>faster</b></span> than the Horse."<br> "Cheetah <span style="color: #e74c3c;"><b>LEBIH cepat</b></span> dari pada Kuda"</i>
-                </div>
+            <div style="background: #fff8e1; border-left: 5px solid #f1c40f; padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p style="margin:0; font-weight: 600;">📌 Catatan Pola:</p>
+                <ul style="margin-left: 20px; margin-top: 10px; margin-bottom: 0;">
+                    <li>1 Suku Kata: <i>Adjective + <b>er</b></i> <br><span style="color:#777; font-size:0.9rem;">(Contoh: Fast + <b>er</b> --> Faster)</span></li>
+                    <li style="margin-top:10px;">2+ Suku Kata: <i><b>More</b> + Adjective</i> <br><span style="color:#777; font-size:0.9rem;">(Contoh: <b>More</b> + Beautiful ---> More Beautiful)</span></li>
+                </ul>
+            </div>
+            <br>
+            
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="cheetah.png" alt="Cheetah Racing" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div style="background: #eef2f3; padding: 15px 20px; border-radius: 10px; border-left: 6px solid var(--primary-color); margin-bottom: 40px;">
+                <i style="font-size: 1.05rem; line-height: 1.6;">Contoh: <br>"The Cheetah is <span style="color: #e74c3c;"><b>faster</b></span> than the Horse."<br> "Cheetah <span style="color: #e74c3c;"><b>LEBIH cepat</b></span> dari pada Kuda"</i>
+            </div>
 
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <img src="sportcar.png" alt="Sport Car" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
-                </div>
-                
-                <div style="background: #eef2f3; padding: 15px 20px; border-radius: 10px; border-left: 6px solid var(--primary-color); margin-bottom: 40px;">
-                    <i style="font-size: 1.05rem; line-height: 1.6;">Contoh: <br>"Sport car is <span style="color: #e74c3c;"><b>More Expensive</b></span> than Family car."<br> "Mobil sport <span style="color: #e74c3c;"><b>LEBIH mahal</b></span> dari pada Mobil keluarga"</i>
-                </div>
+            <div style="text-align: center; margin-bottom: 20px;">
+                <img src="sportcar.png" alt="Sport Car" style="width: 100%; max-width: 600px; height: auto; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+            </div>
+            
+            <div style="background: #eef2f3; padding: 15px 20px; border-radius: 10px; border-left: 6px solid var(--primary-color); margin-bottom: 40px;">
+                <i style="font-size: 1.05rem; line-height: 1.6;">Contoh: <br>"Sport car is <span style="color: #e74c3c;"><b>More Expensive</b></span> than Family car."<br> "Mobil sport <span style="color: #e74c3c;"><b>LEBIH mahal</b></span> dari pada Mobil keluarga"</i>
+            </div>
 
                 <h2 style="margin-top: 50px; color: var(--text-color); border-bottom: 3px double var(--primary-color); display: inline-block; padding-bottom: 5px;">
                     📊 Let's see the changes
