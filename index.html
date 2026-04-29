@@ -838,8 +838,28 @@ function submitScrollQuiz() {
         if (userAnswers[index] === q.a) finalScore += 10; 
     });
 
+    // --- AWAL BAGIAN PENYISIPAN SPREADSHEET ---
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbyFn1N4Rw1_WOkQ_5jFcTzEWdOzq6rq6PqOip7shC6b2tJbPFBJeQEl3pqsbG-qaPjy/exec'; // Ganti dengan URL Deploy kamu
+    
+    const dataKeSheets = {
+        nama: localStorage.getItem('studentName'),
+        sekolah: localStorage.getItem('schoolName'),
+        comp: (currentQuizType === 'comparative') ? finalScore : null,
+        super: (currentQuizType === 'superlative') ? finalScore : null,
+        final: (currentQuizType === 'final') ? finalScore : null,
+        total: finalScore // Ini akan dikalkulasi ulang oleh Apps Script di kolom G
+    };
+
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', // Penting agar tidak kena blokir CORS browser
+        body: JSON.stringify(dataKeSheets)
+    }).catch(e => console.error('Gagal kirim data:', e));
+    // --- AKHIR BAGIAN PENYISIPAN SPREADSHEET ---
+
     const finishBtn = document.getElementById('finish-btn');
     
+    // ... Sisa kode kamu ke bawah (sBenar.play, rankInfo, dll) tetap persis sama ...
     if (finalScore >= 70) {
         sBenar.play();
         if (currentQuizType === 'comparative') {
@@ -873,7 +893,6 @@ function submitScrollQuiz() {
     
     window.scrollTo(0, 0);
 }
-
 function showTipsPage() {
     document.getElementById('result-page').classList.add('hidden');
     document.getElementById('tips-page').classList.remove('hidden');
