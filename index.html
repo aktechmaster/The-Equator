@@ -185,49 +185,49 @@
         </select>
 
         <button class="btn-primary" onclick="startMission()">Mulai Misi Belajar</button>
-    </div> <div id="material-section" class="card hidden">
-        
+    <div id="material-section" class="card hidden">
         <h2 style="font-size: 1.3rem; margin-bottom: 5px; color: var(--text-color);">Halo, <span id="displayName" style="color: var(--primary-color);">Siswa</span>!</h2>
         <p style="margin-top: 0; margin-bottom: 20px; font-size: 0.9rem; color: #7f8c8d;">Asal Sekolah: <span id="displaySchool" style="font-weight: 600;">-</span></p>
 
         <p style="margin-bottom: 25px; color: #7f8c8d;">Silahkan pilih materi belajarmu hari ini:</p>
         
         <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 1 | I Can Speak Five Languages
-            </div>
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 2 | I Play Golf on Weekends
-            </div>
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 3 | What are You Doing?
-            </div>
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 4 | We Went Camping Last Week
-            </div>
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 5 | What were They Doing?
-            </div>
-            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">
-                🔒 Chapter 6 | Let Me Tell You My Story
-            </div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 1 | I Can Speak Five Languages</div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 2 | I Play Golf on Weekends</div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 3 | What are You Doing?</div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 4 | We Went Camping Last Week</div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 5 | What were They Doing?</div>
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 6 | Let Me Tell You My Story</div>
             
-            <div class="level-box unlocked" onclick="goToComparative()" style="border-left: 8px solid var(--primary-color); font-weight: 600;">
+            <div class="level-box unlocked" onclick="openChapterMenu()" style="border-left: 8px solid var(--primary-color); font-weight: 600;">
                 🔓 Chapter 7 | I'm Taller than You (Comparative)
             </div>
-
-            <div id="level-b-box" class="level-box locked" onclick="alert('Selesaikan Chapter 7 dulu dengan skor minimal 70!')">
-                🔒 Chapter 8 | In a Faraway Kingdom
-            </div>
+            
+            <div class="level-box locked" onclick="alert('Materi ini belum tersedia!')">🔒 Chapter 8 | In a Faraway Kingdom</div>
         </div>
-        
+
         <div style="text-align: center; margin-top: 25px;">
             <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; font-weight: 600; font-family: 'Poppins'; transition: 0.3s; padding: 5px 15px; border-radius: 5px;">⏏ Keluar / Ganti Akun</button>
         </div>
     </div>
+    <div id="chapter-menu-page" class="card hidden">
+        <button class="btn-back" onclick="backToMaterialList()">← Kembali ke Daftar Chapter</button>
+        <h2 style="font-size: 1.3rem; margin-bottom: 25px; color: var(--text-color); border-bottom: 2px dashed #eee; padding-bottom: 10px;">Chapter 7: I'm Taller than You</h2>
+        
+        <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+            <div class="level-box unlocked" onclick="startComparativeMateri()" style="border-left: 8px solid var(--primary-color);">
+                <h3 style="margin-top:0; margin-bottom:5px;">🔓 Level A: Comparative</h3>
+                <p style="margin:0; font-size:0.9rem; color:#555;">(Lebih ..... Dari pada .....)</p>
+            </div>
+
+            <div id="level-b-box-chapter" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
+                <h3 style="margin-top:0; margin-bottom:5px; color: inherit;">🔒 Level B: Superlative</h3>
+                <p style="margin:0; font-size:0.9rem; color: inherit;">(Paling ..... diantara .....)</p>
+            </div>
+        </div>
+    </div>
     <div id="comparative-page" class="card hidden">
-        <button class="btn-back" onclick="backToMenu()">← Kembali ke Menu</button>
-        <h2 style="border-bottom: 2px dashed #eee; padding-bottom: 15px; margin-bottom: 20px;">Level A: Comparative Degree <br><span style="color: #e74c3c; font-size: 1.1rem; font-weight: normal;">(Lebih .... Dari pada ....)</span></h2>
+        <button class="btn-back" onclick="backToChapterMenu()">← Kembali ke Menu Level</button>
         
         <div>
             <p style="font-size: 1.05rem;">Comparative digunakan untuk membandingkan <b>dua</b> benda atau orang.</p>
@@ -410,7 +410,7 @@ window.onload = function() {
             startRealQuiz();
             alert("Melanjutkan ujian yang belum selesai...");
         } else if (currentPage === 'comparative') {
-            goToComparative();
+            openChapterMenu();
         } else {
             showMaterialPage(savedName);
         }
@@ -426,7 +426,7 @@ function startMission() {
     if (name.trim() !== "" && email.trim() !== "" && school.trim() !== "") {
         localStorage.setItem('studentName', name); 
         localStorage.setItem('schoolName', school); // Simpan sekolah
-        showMaterialPage(name);
+        openChapterMenu();
     } else {
         alert("Mohon isi Nama, Email, dan Nama Sekolah terlebih dahulu ya!");
     }
@@ -436,38 +436,51 @@ function startMission() {
 function showMaterialPage(name) {
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('chapter-menu-page').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('displayName').innerText = name;
 
-    // Ambil data sekolah dari LocalStorage & ubah teks di HTML
     const savedSchool = localStorage.getItem('schoolName');
     if (savedSchool) {
         document.getElementById('displaySchool').innerText = savedSchool;
     }
+}
 
-    // Cek apakah Level B sudah terbuka
+function openChapterMenu() {
+    document.getElementById('material-section').classList.add('hidden');
+    document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('chapter-menu-page').classList.remove('hidden');
+    
+    // Cek apakah gembok Level B sudah terbuka
     const isLevelBUnlocked = localStorage.getItem('levelB_unlocked');
-    const levelBBox = document.getElementById('level-b-box'); 
+    const levelBBox = document.getElementById('level-b-box-chapter'); 
 
     if (isLevelBUnlocked === 'true') {
         levelBBox.classList.remove('locked');
         levelBBox.classList.add('unlocked');
-        levelBBox.innerHTML = `🔓 Chapter 8 | In a Faraway Kingdom`;
-        levelBBox.style.fontWeight = "600";
+        levelBBox.style.borderLeft = "8px solid var(--primary-color)";
+        levelBBox.innerHTML = `<h3 style="margin-top:0; margin-bottom:5px; color: var(--text-color);">🔓 Level B: Superlative</h3>
+                               <p style="margin:0; font-size:0.9rem; color:#555;">(Paling ..... diantara .....)</p>`;
         levelBBox.onclick = function() { goToSuperlative(); }; 
     }
 }
 
-function goToComparative() {
-    document.getElementById('material-section').classList.add('hidden');
-    document.getElementById('comparative-page').classList.remove('hidden');
-    localStorage.setItem('currentPage', 'comparative');
+function backToMaterialList() {
+    document.getElementById('chapter-menu-page').classList.add('hidden');
+    document.getElementById('material-section').classList.remove('hidden');
 }
 
-function backToMenu() {
+function startComparativeMateri() {
+    document.getElementById('chapter-menu-page').classList.add('hidden');
+    document.getElementById('comparative-page').classList.remove('hidden');
+    localStorage.setItem('currentPage', 'comparative');
+    window.scrollTo(0,0);
+}
+
+function backToChapterMenu() {
     localStorage.removeItem('currentPage');
     document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('material-section').classList.remove('hidden');
+    document.getElementById('chapter-menu-page').classList.remove('hidden');
 }
 
 function logout() {
