@@ -426,7 +426,7 @@ function startMission() {
     if (name.trim() !== "" && email.trim() !== "" && school.trim() !== "") {
         localStorage.setItem('studentName', name); 
         localStorage.setItem('schoolName', school); // Simpan sekolah
-        openChapterMenu();
+        showMaterialPage(name);
     } else {
         alert("Mohon isi Nama, Email, dan Nama Sekolah terlebih dahulu ya!");
     }
