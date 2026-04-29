@@ -280,9 +280,9 @@
             <p style="margin:0; font-size:0.9rem; color: inherit;">(Paling ..... diantara .....)</p>
         </div>
 
-        <button class="btn-primary" onclick="openFullLeaderboard()" style="background: linear-gradient(135deg, #f39c12, #d35400); margin-top: 10px;">
-            🏆 Lihat Papan Ranking Siswa
-        </button>
+        <button class="btn-primary" onclick="openLeaderboard()" style="background: linear-gradient(135deg, #f39c12, #d35400); margin-top: 10px;">
+    🏆 Lihat Papan Ranking Siswa
+</button>
     </div>
 </div>
     
@@ -545,8 +545,20 @@
 
     <div id="quiz-page" class="hidden card">
         </div>
+    
+<div id="quiz-page" class="hidden card">
+        </div>
 
-</div> <style>
+        <div id="leaderboardPopup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:9999; justify-content:center; align-items:center; padding:20px;">
+            <div class="card" style="width:100%; max-width:600px; max-height:80vh; overflow-y:auto; position:relative; background:white; padding:20px; border-radius:15px;">
+                <button onclick="closeLeaderboard()" style="position:absolute; right:15px; top:15px; border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                <h2 id="rankTitle" style="text-align:center; color:#e67e22;">🏆 Papan Ranking</h2>
+                <div id="rankList"></div>
+            </div>
+        </div>
+</div> 
+    
+    <style>
     /* Taruh CSS tambahan/animasi di sini */
     @keyframes popIn {
         0% { transform: scale(0.5); opacity: 0; }
