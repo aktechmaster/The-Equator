@@ -294,22 +294,25 @@
             <button onclick="logout()" style="color:#e74c3c; background:none; border:none; cursor:pointer; font-weight: 600; font-family: 'Poppins'; transition: 0.3s; padding: 5px 15px; border-radius: 5px;">⏏ Keluar / Ganti Akun</button>
         </div>
     </div>
+    
     <div id="chapter-menu-page" class="card hidden">
-        <button class="btn-back" onclick="backToMaterialList()">← Kembali ke Daftar Chapter</button>
-        <h2 style="font-size: 1.3rem; margin-bottom: 25px; color: var(--text-color); border-bottom: 2px dashed #eee; padding-bottom: 10px;">Chapter 7: I'm Taller than You</h2>
-        
-        <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
-            <div class="level-box unlocked" onclick="startComparativeMateri()" style="border-left: 8px solid var(--primary-color);">
-                <h3 style="margin-top:0; margin-bottom:5px;">🔓 Level A: Comparative</h3>
-                <p style="margin:0; font-size:0.9rem; color:#555;">(Lebih ..... Dari pada .....)</p>
-            </div>
+    <button class="btn-back" onclick="backToMaterialList()">← Kembali ke Daftar Chapter</button>
+    <h2 style="font-size: 1.3rem; margin-bottom: 25px; color: var(--text-color); border-bottom: 2px dashed #eee; padding-bottom: 10px;">Chapter 7: I'm Taller than You</h2>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
+        <div class="level-box unlocked" onclick="startComparativeMateri()" style="border-left: 8px solid var(--primary-color); position: relative;">
+            <div class="rank-trigger" onclick="event.stopPropagation(); openLeaderboard('comparative')">🏆</div>
+            <h3 style="margin-top:0; margin-bottom:5px;">🔓 Level A: Comparative</h3>
+            <p style="margin:0; font-size:0.9rem; color:#555;">(Lebih ..... Dari pada .....)</p>
+        </div>
 
-            <div id="level-b-box-chapter" class="level-box locked" onclick="alert('Selesaikan Level A dulu dengan skor minimal 70!')">
-                <h3 style="margin-top:0; margin-bottom:5px; color: inherit;">🔒 Level B: Superlative</h3>
-                <p style="margin:0; font-size:0.9rem; color: inherit;">(Paling ..... diantara .....)</p>
-            </div>
+        <div id="level-b-box-chapter" class="level-box locked" onclick="checkLevelB()" style="position: relative;">
+            <div id="rank-trigger-b" class="rank-trigger" onclick="event.stopPropagation(); openLeaderboard('superlative')">🏆</div>
+            <h3 style="margin-top:0; margin-bottom:5px; color: inherit;">🔒 Level B: Superlative</h3>
+            <p style="margin:0; font-size:0.9rem; color: inherit;">(Paling ..... diantara .....)</p>
         </div>
     </div>
+</div>
 
     <div id="leaderboardPopup" class="leaderboard-modal">
     <div class="leaderboard-content">
@@ -991,34 +994,48 @@ function backToMenuFromB() {
     document.getElementById('chapter-menu-page').classList.remove('hidden');
 }
 
-    // Fungsi Buka Pop-up Ranking
+    // ISI DENGAN URL GOOGLE APPS SCRIPT KAMU
+const scriptURL = 'https://script.google.com/macros/s/AKfycbyFn1N4Rw1_WOkQ_5jFcTzEWdOzq6rq6PqOip7shC6b2tJbPFBJeQEl3pqsbG-qaPjy/exec'; 
+
+// Fungsi untuk membuka Pop-up Papan Skor
 function openLeaderboard(chapter) {
     const popup = document.getElementById('leaderboardPopup');
     const list = document.getElementById('rankList');
     const title = document.getElementById('rankTitle');
 
+    // Munculkan Pop-up
     popup.style.display = 'flex';
     title.innerText = "🏆 TOP 10: " + (chapter === 'comparative' ? "COMPARATIVE" : "SUPERLATIVE");
-    list.innerHTML = "<p>⏳ Mengambil data dari server...</p>";
+    list.innerHTML = "<p style='text-align:center; padding:20px;'>⏳ Mengambil data ranking...</p>";
 
-    // Panggil URL Google Apps Script (doGet)
-    // Pastikan variabel scriptURL sudah berisi URL Web App kamu
+    // Ambil data dari Google Sheets (Fungsi doGet di Apps Script)
     fetch(`${scriptURL}?chapter=${chapter}`)
         .then(res => res.json())
         .then(data => {
-            if (data.length === 0) {
-                list.innerHTML = "<p>Belum ada peserta di chapter ini.</p>";
+            if (!data || data.length === 0) {
+                list.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada data skor untuk chapter ini.</p>";
                 return;
             }
 
             let table = `<table class="rank-table">
-                <thead><tr><th>No</th><th>Nama</th><th>Sekolah</th><th>Skor</th></tr></thead>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama</th>
+                        <th>Sekolah</th>
+                        <th>Skor</th>
+                    </tr>
+                </thead>
                 <tbody>`;
             
             data.forEach((item, index) => {
-                table += `<tr>
+                // Beri warna berbeda untuk 3 besar
+                let rowStyle = "";
+                if(index === 0) rowStyle = "style='background:#fff9c4; font-weight:bold;'";
+                
+                table += `<tr ${rowStyle}>
                     <td>${index + 1}</td>
-                    <td><b>${item.nama}</b></td>
+                    <td>${item.nama}</td>
                     <td><small>${item.sekolah}</small></td>
                     <td style="color:var(--primary-color); font-weight:bold;">${item.skor}</td>
                 </tr>`;
@@ -1028,20 +1045,22 @@ function openLeaderboard(chapter) {
             list.innerHTML = table;
         })
         .catch(err => {
-            list.innerHTML = "<p style='color:red;'>Gagal mengambil data. Pastikan koneksi internet stabil.</p>";
+            list.innerHTML = "<p style='text-align:center; padding:20px; color:red;'>Gagal memuat data. Cek koneksi internet.</p>";
+            console.error(err);
         });
 }
 
+// Fungsi tutup Pop-up
 function closeLeaderboard() {
     document.getElementById('leaderboardPopup').style.display = 'none';
 }
 
-// Tambahan: Pastikan icon Trofi Level B muncul jika Level B terbuka
-// Sisipkan ini di dalam fungsi openChapterMenu() kamu yang lama
-function updateLeaderboardIcon() {
-    const isLevelBUnlocked = localStorage.getItem('levelB_unlocked');
-    if (isLevelBUnlocked === 'true') {
-        document.getElementById('rank-trigger-b')?.classList.remove('hidden');
+// Fungsi tambahan untuk handle klik Level B
+function checkLevelB() {
+    if (localStorage.getItem('levelB_unlocked') === 'true') {
+        startSuperlativeMateri();
+    } else {
+        alert('Selesaikan Level A dulu dengan skor minimal 70!');
     }
 }
 </script>
