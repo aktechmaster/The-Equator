@@ -164,9 +164,7 @@
 
 <div class="container">
     <img src="equator.png" alt="Logo Equator" style="display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;">
-      <span id="headerSchoolName" style="font-weight: 600; color: var(--primary-color); font-size: 1.1rem; letter-spacing: 0.5px;">Sekolah Menengah Pertama</span>
-    </p>
-
+    
     <div id="login-section" class="card">
         <h2 style="font-size: 1.3rem; margin-bottom: 20px; color: var(--text-color);">Mulai Petualanganmu!</h2>
         <input type="text" id="studentName" placeholder="Masukkan Nama Lengkap">
@@ -422,7 +420,6 @@ function showMaterialPage(name) {
     const savedSchool = localStorage.getItem('schoolName');
     if (savedSchool) {
         document.getElementById('displaySchool').innerText = savedSchool;
-        document.getElementById('headerSchoolName').innerText = savedSchool;
     }
 
     // Cek apakah Level B sudah terbuka
