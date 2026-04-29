@@ -182,53 +182,23 @@
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
 }
 
-        /* Style Pop-up Papan Skor */
-.leaderboard-modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7);
-    display: none; /* Sembunyi */
-    justify-content: center;
-    align-items: center;
-    z-index: 9999;
-    padding: 20px;
-}
-.leaderboard-content {
-    background: white;
-    width: 100%;
-    max-width: 500px;
-    border-radius: 16px;
-    padding: 25px;
-    position: relative;
-    max-height: 80vh;
-    overflow-y: auto;
-}
-.rank-table {
-    width: 100%;
-    border-collapse: collapse;
+        .table-wrapper {
+    overflow-x: auto; /* Agar tabel bisa di-scroll ke samping di HP */
     margin-top: 15px;
 }
-.rank-table th, .rank-table td {
-    padding: 12px;
-    text-align: left;
+.rank-table-full {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+.rank-table-full th, .rank-table-full td {
+    padding: 10px;
+    text-align: center;
     border-bottom: 1px solid #eee;
-    font-size: 0.9rem;
+    white-space: nowrap; /* Mencegah teks terpotong ke bawah */
 }
-.rank-table th { background: #f8f9fa; }
-.btn-close-modal {
-    position: absolute;
-    top: 10px; right: 15px;
-    font-size: 24px; cursor: pointer; color: #999;
-}
-/* Icon Trofi di Pojok Box */
-.rank-trigger {
-    position: absolute;
-    top: 15px; right: 15px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-.rank-trigger:hover { transform: scale(1.2); }
+.rank-table-full th { background: #f8f9fa; color: #333; }
+.col-nama { text-align: left !important; position: sticky; left: 0; background: white; z-index: 1; }
         
     </style>
 </head>
@@ -300,25 +270,19 @@
     <h2 style="font-size: 1.3rem; margin-bottom: 25px; color: var(--text-color); border-bottom: 2px dashed #eee; padding-bottom: 10px;">Chapter 7: I'm Taller than You</h2>
     
     <div style="display: flex; flex-direction: column; gap: 15px; text-align: left;">
-        <div class="level-box unlocked" onclick="startComparativeMateri()" style="border-left: 8px solid var(--primary-color); position: relative;">
-            <div class="rank-trigger" onclick="event.stopPropagation(); openLeaderboard('comparative')">🏆</div>
+        <div class="level-box unlocked" onclick="startComparativeMateri()" style="border-left: 8px solid var(--primary-color);">
             <h3 style="margin-top:0; margin-bottom:5px;">🔓 Level A: Comparative</h3>
             <p style="margin:0; font-size:0.9rem; color:#555;">(Lebih ..... Dari pada .....)</p>
         </div>
 
-        <div id="level-b-box-chapter" class="level-box locked" onclick="checkLevelB()" style="position: relative;">
-            <div id="rank-trigger-b" class="rank-trigger" onclick="event.stopPropagation(); openLeaderboard('superlative')">🏆</div>
+        <div id="level-b-box-chapter" class="level-box locked" onclick="checkLevelB()">
             <h3 style="margin-top:0; margin-bottom:5px; color: inherit;">🔒 Level B: Superlative</h3>
             <p style="margin:0; font-size:0.9rem; color: inherit;">(Paling ..... diantara .....)</p>
         </div>
-    </div>
-</div>
 
-    <div id="leaderboardPopup" class="leaderboard-modal">
-    <div class="leaderboard-content">
-        <span class="btn-close-modal" onclick="closeLeaderboard()">&times;</span>
-        <h3 id="rankTitle" style="color: var(--primary-color); margin-top: 0;">Papan Ranking</h3>
-        <div id="rankList">Memuat data...</div>
+        <button class="btn-primary" onclick="openFullLeaderboard()" style="background: linear-gradient(135deg, #f39c12, #d35400); margin-top: 10px;">
+            🏆 Lihat Papan Ranking Siswa
+        </button>
     </div>
 </div>
     
@@ -997,51 +961,59 @@ function backToMenuFromB() {
     // ISI DENGAN URL GOOGLE APPS SCRIPT KAMU
 const scriptURL = 'https://script.google.com/macros/s/AKfycbyFn1N4Rw1_WOkQ_5jFcTzEWdOzq6rq6PqOip7shC6b2tJbPFBJeQEl3pqsbG-qaPjy/exec'; 
 
-// Fungsi untuk membuka Pop-up Papan Skor
-function openLeaderboard(chapter) {
+// Fungsi untuk membuka Pop-up Papan Skor Lengkap
+function openLeaderboard() {
     const popup = document.getElementById('leaderboardPopup');
     const list = document.getElementById('rankList');
     const title = document.getElementById('rankTitle');
 
     // Munculkan Pop-up
     popup.style.display = 'flex';
-    title.innerText = "🏆 TOP 10: " + (chapter === 'comparative' ? "COMPARATIVE" : "SUPERLATIVE");
-    list.innerHTML = "<p style='text-align:center; padding:20px;'>⏳ Mengambil data ranking...</p>";
+    title.innerText = "🏆 PAPAN RANKING SISWA";
+    list.innerHTML = "<p style='text-align:center; padding:20px;'>⏳ Mengambil data ranking lengkap...</p>";
 
-    // Ambil data dari Google Sheets (Fungsi doGet di Apps Script)
-    fetch(`${scriptURL}?chapter=${chapter}`)
+    // Ambil data dari Google Sheets dengan parameter chapter=full
+    fetch(`${scriptURL}?chapter=full`)
         .then(res => res.json())
         .then(data => {
             if (!data || data.length === 0) {
-                list.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada data skor untuk chapter ini.</p>";
+                list.innerHTML = "<p style='text-align:center; padding:20px;'>Belum ada data skor.</p>";
                 return;
             }
 
-            let table = `<table class="rank-table">
-                <thead>
-                    <tr>
-                        <th>No</th>
-                        <th>Nama</th>
-                        <th>Sekolah</th>
-                        <th>Skor</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            // Gunakan pembungkus div agar tabel bisa di-scroll ke samping di HP
+            let table = `
+            <div style="overflow-x: auto;">
+                <table class="rank-table" style="min-width: 500px; font-size: 0.85rem;">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th style="text-align:left;">Nama</th>
+                            <th>Sekolah</th>
+                            <th>Comp</th>
+                            <th>Super</th>
+                            <th>Final</th>
+                            <th style="background:#e3f2fd">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
             
             data.forEach((item, index) => {
-                // Beri warna berbeda untuk 3 besar
                 let rowStyle = "";
                 if(index === 0) rowStyle = "style='background:#fff9c4; font-weight:bold;'";
                 
                 table += `<tr ${rowStyle}>
                     <td>${index + 1}</td>
-                    <td>${item.nama}</td>
+                    <td style="text-align:left;">${item.nama}</td>
                     <td><small>${item.sekolah}</small></td>
-                    <td style="color:var(--primary-color); font-weight:bold;">${item.skor}</td>
+                    <td>${item.comp || '-'}</td>
+                    <td>${item.super || '-'}</td>
+                    <td>${item.final || '-'}</td>
+                    <td style="color:var(--primary-color); font-weight:bold;">${item.total || 0}</td>
                 </tr>`;
             });
 
-            table += `</tbody></table>`;
+            table += `</tbody></table></div>`;
             list.innerHTML = table;
         })
         .catch(err => {
@@ -1050,12 +1022,10 @@ function openLeaderboard(chapter) {
         });
 }
 
-// Fungsi tutup Pop-up
 function closeLeaderboard() {
     document.getElementById('leaderboardPopup').style.display = 'none';
 }
 
-// Fungsi tambahan untuk handle klik Level B
 function checkLevelB() {
     if (localStorage.getItem('levelB_unlocked') === 'true') {
         startSuperlativeMateri();
