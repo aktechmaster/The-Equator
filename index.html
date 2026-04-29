@@ -497,6 +497,19 @@ const questions = [
     { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
 ];
 
+    const superlativeQuestions = [
+    { q: "1. Mount Everest is The ... mountain in the world.", options: ["higher", "Higher", "highest", "most high"], a: 2 },
+    { q: "2. Who is The ... student in your class?", options: ["most diligent", "Diligentest", "diligentest", "More diligent"], a: 0 },
+    { q: "3. This is The ... movie I have ever watched.", options: ["worse", "baddest", "worst", "Worstest"], a: 2 },
+    { q: "4. Jupiter is The ... planet in our solar system.", options: ["most big", "biggest", "Bigger", "bigest"], a: 1 },
+    { q: "5. For many people, Italian food is The ... in the world.", options: ["deliciousest", "more delicious", "most delicious", "Delicious"], a: 2 },
+    { q: "6. Cheetah is The ... land animal on Earth.", options: ["fastest", "most fast", "Fastest", "more fast"], a: 0 },
+    { q: "7. It was The ... day of my life! I'm so happy.", options: ["goodest", "best", "most good", "better"], a: 1 },
+    { q: "8. Buying a diamond ring is The ... way to spend money.", options: ["expensivest", "More expensive", "most expensive", "most expensiver"], a: 2 },
+    { q: "9. This is The ... room in the house; it gets no sunlight.", options: ["most dark", "darker", "darkest", "dark"], a: 2 },
+    { q: "10. He is The ... person I know; he always makes me laugh.", options: ["most funny", "funniest", "Funnyest", "funnier"], a: 1 }
+];
+
 // --- SISTEM PENYELAMAT DATA (HANYA SATU ONLOAD) ---
 window.onload = function() {
     const savedName = localStorage.getItem('studentName');
@@ -576,6 +589,19 @@ function startComparativeMateri() {
     document.getElementById('comparative-page').classList.remove('hidden');
     localStorage.setItem('currentPage', 'comparative');
     window.scrollTo(0,0);
+}
+
+    function startSuperlativeQuiz() {
+    // Sembunyikan halaman materi B, tampilkan halaman kuis
+    document.getElementById('superlative-page').classList.add('hidden');
+    document.getElementById('quiz-page').classList.remove('hidden');
+    
+    // Ubah Judul Kuis secara dinamis (Opsional biar keren)
+    document.querySelector('#quiz-page h2').innerText = "EXAM: SUPERLATIVE";
+    
+    // Panggil fungsi render soal kamu (asumsi namanya renderQuiz)
+    // Gunakan variabel superlativeQuestions sebagai sumbernya
+    renderQuiz(superlativeQuestions); 
 }
 
 function backToChapterMenu() {
