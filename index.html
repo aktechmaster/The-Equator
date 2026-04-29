@@ -483,7 +483,7 @@ let selectedComp = null;
 let solvedPairs = 0;
 const totalPairs = 4;
 let userAnswers = {};
-let currentQuizType = 'comparative'; // Tambahkan ini sebagai penanda default
+let currentQuizType = 'comparative'; // Penanda default
 
 const questions = [
     { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
@@ -498,7 +498,7 @@ const questions = [
     { q: "10. This knife is ... than that one. Be careful!", options: ["Sharper", "More sharp", "Sharpest", "More sharper"], a: 0 }
 ];
 
-    const superlativeQuestions = [
+const superlativeQuestions = [
     { q: "1. Mount Everest is The ... mountain in the world.", options: ["higher", "Higher", "highest", "most high"], a: 2 },
     { q: "2. Who is The ... student in your class?", options: ["most diligent", "Diligentest", "diligentest", "More diligent"], a: 0 },
     { q: "3. This is The ... movie I have ever watched.", options: ["worse", "baddest", "worst", "Worstest"], a: 2 },
@@ -511,48 +511,51 @@ const questions = [
     { q: "10. He is The ... person I know; he always makes me laugh.", options: ["most funny", "funniest", "Funnyest", "funnier"], a: 1 }
 ];
 
-// --- SISTEM PENYELAMAT DATA (HANYA SATU ONLOAD) ---
+// --- SISTEM PENYELAMAT DATA ---
 window.onload = function() {
     const savedName = localStorage.getItem('studentName');
     const examStatus = localStorage.getItem('examStatus');
     const currentPage = localStorage.getItem('currentPage');
+    const lastType = localStorage.getItem('currentQuizType') || 'comparative';
 
     if (savedName) {
         document.getElementById('login-section').classList.add('hidden');
         document.getElementById('displayName').innerText = savedName;
 
         if (examStatus === 'on-progress') {
-            startRealQuiz();
+            startRealQuiz(lastType);
             alert("Melanjutkan ujian yang belum selesai...");
         } else if (currentPage === 'comparative') {
             openChapterMenu();
+        } else if (currentPage === 'superlative') {
+            openChapterMenu();
+            goToSuperlative();
         } else {
             showMaterialPage(savedName);
         }
     }
 };
 
-// 3. Logika Navigasi (DIPERBARUI)
 function startMission() {
     const name = document.getElementById('studentName').value;
     const email = document.getElementById('studentEmail').value;
-    const school = document.getElementById('schoolName').value; // Ambil nilai sekolah
+    const school = document.getElementById('schoolName').value; 
     
     if (name.trim() !== "" && email.trim() !== "" && school.trim() !== "") {
         localStorage.setItem('studentName', name); 
-        localStorage.setItem('schoolName', school); // Simpan sekolah
+        localStorage.setItem('schoolName', school);
         showMaterialPage(name);
     } else {
         alert("Mohon isi Nama, Email, dan Nama Sekolah terlebih dahulu ya!");
     }
 }
 
-// FUNGSI INI KINI MENGATUR TAMPILAN SEKOLAH JUGA
 function showMaterialPage(name) {
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.remove('hidden');
     document.getElementById('chapter-menu-page').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('superlative-page').classList.add('hidden'); 
     document.getElementById('displayName').innerText = name;
 
     const savedSchool = localStorage.getItem('schoolName');
@@ -564,9 +567,9 @@ function showMaterialPage(name) {
 function openChapterMenu() {
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('superlative-page').classList.add('hidden');
     document.getElementById('chapter-menu-page').classList.remove('hidden');
     
-    // Cek apakah gembok Level B sudah terbuka
     const isLevelBUnlocked = localStorage.getItem('levelB_unlocked');
     const levelBBox = document.getElementById('level-b-box-chapter'); 
 
@@ -592,22 +595,15 @@ function startComparativeMateri() {
     window.scrollTo(0,0);
 }
 
-    function startSuperlativeQuiz() {
-    // Sembunyikan halaman materi B, tampilkan halaman kuis
-    document.getElementById('superlative-page').classList.add('hidden');
-    document.getElementById('quiz-page').classList.remove('hidden');
-    
-    // Ubah Judul Kuis secara dinamis (Opsional biar keren)
-    document.querySelector('#quiz-page h2').innerText = "EXAM: SUPERLATIVE";
-    
-    // Panggil fungsi render soal kamu (asumsi namanya renderQuiz)
-    // Gunakan variabel superlativeQuestions sebagai sumbernya
-    renderQuiz(superlativeQuestions); 
+// PERBAIKAN DI SINI: Menyambungkan startSuperlativeQuiz ke startRealQuiz
+function startSuperlativeQuiz() {
+    startRealQuiz('superlative'); 
 }
 
 function backToChapterMenu() {
     localStorage.removeItem('currentPage');
     document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('superlative-page').classList.add('hidden');
     document.getElementById('chapter-menu-page').classList.remove('hidden');
 }
 
@@ -656,30 +652,23 @@ function selectWord(btn, type) {
 function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
 function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
-// --- FUNGSI KUIS DINAMIS (PENGGANTI FUNGSI LAMA) ---
-
 function startRealQuiz(type = 'comparative') {
     markExamAsStarted();
-    
-    // Simpan tipe kuis yang sedang dimainkan agar submitScrollQuiz tidak bingung
-    window.currentQuizType = type; 
+    currentQuizType = type; // Set global variabel tipe kuis
+    localStorage.setItem('currentQuizType', type);
 
-    // Pilih data soal berdasarkan type
     const activeQuestions = (type === 'superlative') ? superlativeQuestions : questions;
-
-    // Reset jawaban user untuk sesi baru
     userAnswers = {};
     localStorage.removeItem('savedAnswers');
 
-    // UI Logic: Sembunyikan semua halaman, tampilkan halaman kuis
+    // UI Logic
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('superlative-page').classList.add('hidden'); // Sembunyikan materi Superlative
+    document.getElementById('superlative-page').classList.add('hidden'); 
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     
-    // Update Judul Kuis secara otomatis
     document.querySelector('#quiz-page h2').innerText = (type === 'superlative') ? "EXAM: SUPERLATIVE" : "EXAM: COMPARATIVE";
 
     const container = document.getElementById('quiz-list-container');
@@ -700,10 +689,11 @@ function startRealQuiz(type = 'comparative') {
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
             
+            // Hover effect asli kamu
             btn.onmouseover = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#3498db"; }
             btn.onmouseout = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#eaeded"; }
 
-            btn.onclick = () => selectOption(qIdx, oIdx, activeQuestions); // Kirim activeQuestions ke sini
+            btn.onclick = () => selectOption(qIdx, oIdx, activeQuestions); 
             optDiv.appendChild(btn);
         });
         qDiv.appendChild(optDiv);
@@ -714,7 +704,6 @@ function startRealQuiz(type = 'comparative') {
 }
 
 function selectOption(qIdx, oIdx, activeQuestions) {
-    // Reset warna semua opsi di soal tersebut
     activeQuestions[qIdx].options.forEach((_, i) => {
         const el = document.getElementById(`q${qIdx}o${i}`);
         if(el) {
@@ -725,7 +714,6 @@ function selectOption(qIdx, oIdx, activeQuestions) {
         }
     });
 
-    // Tandai yang dipilih
     const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
     selectedBtn.style.backgroundColor = "#e3f2fd"; 
     selectedBtn.style.color = "#2980b9"; 
@@ -747,7 +735,6 @@ function submitScrollQuiz() {
     localStorage.removeItem('savedAnswers');
 
     let finalScore = 0;
-    // Tentukan kunci jawaban berdasarkan tipe kuis yang sedang dimainkan
     const currentData = (currentQuizType === 'superlative') ? superlativeQuestions : questions;
 
     currentData.forEach((q, index) => { 
@@ -756,29 +743,25 @@ function submitScrollQuiz() {
 
     const finishBtn = document.getElementById('finish-btn');
     
-    // Logika setelah lulus
     if (finalScore >= 70) {
         sBenar.play();
         if (currentQuizType === 'comparative') {
             localStorage.setItem('levelB_unlocked', 'true');
             finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
+            finishBtn.onclick = function() { location.reload(); };
         } else {
             finishBtn.innerText = "🏆 KAMU MASTER COMPARISON!";
+            finishBtn.onclick = function() {
+                showMaterialPage(localStorage.getItem('studentName'));
+                document.getElementById('result-page').classList.add('hidden');
+            };
         }
-        
-        finishBtn.onclick = function() {
-            const name = localStorage.getItem('studentName');
-            showMaterialPage(name); 
-            document.getElementById('result-page').classList.add('hidden');
-            window.scrollTo(0, 0);
-        };
     } else {
         sSalah.play();
         finishBtn.innerText = "Ulangi Petualangan";
         finishBtn.onclick = function() { location.reload(); };
     }
 
-    // Tampilkan hasil
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
@@ -788,7 +771,6 @@ function submitScrollQuiz() {
     document.getElementById('rank-title').style.backgroundColor = rankInfo.color;
     document.getElementById('rank-desc').innerText = rankInfo.desc;
     
-    userAnswers = {};
     window.scrollTo(0, 0);
 }
 
@@ -810,11 +792,6 @@ function getRank(s) {
 }
 
 function goToSuperlative() {
-    alert("Selamat! Kamu masuk ke Level B: Superlative. (Halaman materi sedang disiapkan)");
-}
-
-    // Navigasi khusus untuk Level B
-function goToSuperlative() {
     document.getElementById('chapter-menu-page').classList.add('hidden');
     document.getElementById('superlative-page').classList.remove('hidden');
     localStorage.setItem('currentPage', 'superlative');
@@ -825,21 +802,6 @@ function backToMenuFromB() {
     localStorage.removeItem('currentPage');
     document.getElementById('superlative-page').classList.add('hidden');
     document.getElementById('chapter-menu-page').classList.remove('hidden');
-}
-
-// Update fungsi showMaterialPage agar bisa menyembunyikan superlative-page juga
-function showMaterialPage(name) {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('material-section').classList.remove('hidden');
-    document.getElementById('chapter-menu-page').classList.add('hidden');
-    document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('superlative-page').classList.add('hidden'); // Tambahkan ini
-    document.getElementById('displayName').innerText = name;
-
-    const savedSchool = localStorage.getItem('schoolName');
-    if (savedSchool) {
-        document.getElementById('displaySchool').innerText = savedSchool;
-    }
 }
     
 </script>
