@@ -483,6 +483,7 @@ let selectedComp = null;
 let solvedPairs = 0;
 const totalPairs = 4;
 let userAnswers = {};
+let currentQuizType = 'comparative'; // Tambahkan ini sebagai penanda default
 
 const questions = [
     { q: "1. Traveling by plane is ... than traveling by ship.", options: ["More fast", "Faster", "Fastest", "More faster"], a: 1 },
@@ -655,25 +656,36 @@ function selectWord(btn, type) {
 function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
 function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
-function startRealQuiz() {
+// --- FUNGSI KUIS DINAMIS (PENGGANTI FUNGSI LAMA) ---
+
+function startRealQuiz(type = 'comparative') {
     markExamAsStarted();
     
-    // Ambil jawaban yang tersimpan di localStorage jika ada
-    const storedAnswers = localStorage.getItem('savedAnswers');
-    if (storedAnswers) {
-        userAnswers = JSON.parse(storedAnswers);
-    }
+    // Simpan tipe kuis yang sedang dimainkan agar submitScrollQuiz tidak bingung
+    window.currentQuizType = type; 
 
+    // Pilih data soal berdasarkan type
+    const activeQuestions = (type === 'superlative') ? superlativeQuestions : questions;
+
+    // Reset jawaban user untuk sesi baru
+    userAnswers = {};
+    localStorage.removeItem('savedAnswers');
+
+    // UI Logic: Sembunyikan semua halaman, tampilkan halaman kuis
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
+    document.getElementById('superlative-page').classList.add('hidden'); // Sembunyikan materi Superlative
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     
+    // Update Judul Kuis secara otomatis
+    document.querySelector('#quiz-page h2').innerText = (type === 'superlative') ? "EXAM: SUPERLATIVE" : "EXAM: COMPARATIVE";
+
     const container = document.getElementById('quiz-list-container');
     container.innerHTML = ''; 
 
-    questions.forEach((q, qIdx) => {
+    activeQuestions.forEach((q, qIdx) => {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 30px; padding: 20px; border-radius: 12px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;";
         qDiv.innerHTML = `<p style="font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; color: #2c3e50;">${q.q}</p>`;
@@ -691,31 +703,29 @@ function startRealQuiz() {
             btn.onmouseover = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#3498db"; }
             btn.onmouseout = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#eaeded"; }
 
-            // LOGIKA RESTORE
-            if (userAnswers[qIdx] === oIdx) {
-                btn.style.backgroundColor = "#e3f2fd";
-                btn.style.color = "#2980b9";
-                btn.style.borderColor = "#3498db";
-                btn.style.fontWeight = "600";
-            }
-
-            btn.onclick = () => selectOption(qIdx, oIdx);
+            btn.onclick = () => selectOption(qIdx, oIdx, activeQuestions); // Kirim activeQuestions ke sini
             optDiv.appendChild(btn);
         });
         qDiv.appendChild(optDiv);
         container.appendChild(qDiv);
     });
+    
+    window.scrollTo(0,0);
 }
 
-function selectOption(qIdx, oIdx) {
-    questions[qIdx].options.forEach((_, i) => {
+function selectOption(qIdx, oIdx, activeQuestions) {
+    // Reset warna semua opsi di soal tersebut
+    activeQuestions[qIdx].options.forEach((_, i) => {
         const el = document.getElementById(`q${qIdx}o${i}`);
-        el.style.backgroundColor = "white"; 
-        el.style.color = "#555"; 
-        el.style.borderColor = "#eaeded";
-        el.style.fontWeight = "normal";
+        if(el) {
+            el.style.backgroundColor = "white"; 
+            el.style.color = "#555"; 
+            el.style.borderColor = "#eaeded";
+            el.style.fontWeight = "normal";
+        }
     });
 
+    // Tandai yang dipilih
     const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
     selectedBtn.style.backgroundColor = "#e3f2fd"; 
     selectedBtn.style.color = "#2980b9"; 
@@ -737,18 +747,25 @@ function submitScrollQuiz() {
     localStorage.removeItem('savedAnswers');
 
     let finalScore = 0;
-    questions.forEach((q, index) => { 
+    // Tentukan kunci jawaban berdasarkan tipe kuis yang sedang dimainkan
+    const currentData = (currentQuizType === 'superlative') ? superlativeQuestions : questions;
+
+    currentData.forEach((q, index) => { 
         if (userAnswers[index] === q.a) finalScore += 10; 
     });
 
     const finishBtn = document.getElementById('finish-btn');
-
+    
+    // Logika setelah lulus
     if (finalScore >= 70) {
-        localStorage.setItem('levelB_unlocked', 'true');
         sBenar.play();
-
-        finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
-        finishBtn.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)"; 
+        if (currentQuizType === 'comparative') {
+            localStorage.setItem('levelB_unlocked', 'true');
+            finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
+        } else {
+            finishBtn.innerText = "🏆 KAMU MASTER COMPARISON!";
+        }
+        
         finishBtn.onclick = function() {
             const name = localStorage.getItem('studentName');
             showMaterialPage(name); 
@@ -758,18 +775,17 @@ function submitScrollQuiz() {
     } else {
         sSalah.play();
         finishBtn.innerText = "Ulangi Petualangan";
-        finishBtn.style.background = "linear-gradient(135deg, var(--primary-color), #2980b9)";
         finishBtn.onclick = function() { location.reload(); };
     }
 
+    // Tampilkan hasil
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
     
     const rankInfo = getRank(finalScore);
-    const rankEl = document.getElementById('rank-title');
-    rankEl.innerText = "RANK: " + rankInfo.title;
-    rankEl.style.backgroundColor = rankInfo.color;
+    document.getElementById('rank-title').innerText = "RANK: " + rankInfo.title;
+    document.getElementById('rank-title').style.backgroundColor = rankInfo.color;
     document.getElementById('rank-desc').innerText = rankInfo.desc;
     
     userAnswers = {};
