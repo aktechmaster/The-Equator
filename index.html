@@ -15,10 +15,15 @@
             --card-bg: #ffffff;
         }
 
-        /* --- BACKGROUND DIPERINDAH --- */
+        /* --- BACKGROUND DIPERINDAH + POLA TITIK ABSTRAK --- */
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #f4f7f6 0%, #e8ecef 100%); 
+            /* Gradasi asli digabung dengan pola titik transparan */
+            background: 
+                radial-gradient(rgba(189, 195, 199, 0.3) 2px, transparent 2px),
+                linear-gradient(135deg, #f4f7f6 0%, #e8ecef 100%);
+            background-size: 30px 30px, 100% 100%; /* Mengatur jarak antar titik */
+            background-position: 0 0, 0 0;
             color: var(--text-color); 
             padding: 20px; 
             display: flex; 
