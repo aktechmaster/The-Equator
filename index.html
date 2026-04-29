@@ -188,6 +188,26 @@
 
 <div class="container">
     <img src="equator.png" alt="Logo Equator" style="display: block; margin: 0 auto 15px auto; max-width: 150px; height: auto;">
+
+<div id="welcome-section" class="card" style="text-align: center; padding: 40px 20px;">
+    <h1 style="color: var(--primary-color); margin-bottom: 10px;">Welcome to Equator! 🌏</h1>
+    <p style="color: #7f8c8d; font-size: 1.1rem; line-height: 1.6; margin-bottom: 25px;">
+        Halo, calon penjelajah bahasa! 🚀<br>
+        <b>Equator (English Quick Action Tutor)</b> hadir untuk membantumu menguasai Dunia Bahasa Inggris melalui misi-misi seru dan Tips & Trik Cepat menjawab soal. Yang pasti kalian akan lebih mudah memahami Bahasa Inggris Bersama Equator. Siap untuk menjadi yang terbaik?
+    </p>
+
+    <div style="display: flex; justify-content: space-around; margin-bottom: 30px; gap: 10px;">
+        <div style="font-size: 0.85rem; color: #555;">🎮<br><b>Interactive Missions</b></div>
+        <div style="font-size: 0.85rem; color: #555;">📊<br><b>Track Your Progress</b></div>
+        <div style="font-size: 0.85rem; color: #555;">🏆<br><b>Earn Your Rank</b></div>
+    </div>
+
+    <button class="btn-primary" onclick="goToLogin()" style="max-width: 250px;">Ayo Mulai Petualangan!</button>
+    
+    <p style="margin-top: 20px; font-size: 0.8rem; color: #bdc3c7;">
+        Akses media: <a href="https://aktechmaster.github.io/The-Equator/" style="color: inherit;">aktechmaster.github.io/The-Equator/</a>
+    </p>
+</div>
     
     <div id="login-section" class="card">
         <h2 style="font-size: 1.3rem; margin-bottom: 20px; color: var(--text-color);">Mulai Petualanganmu!</h2>
@@ -521,7 +541,7 @@
 </style>
 
 <script>
-    // 1. Deklarasi Audio
+// 1. Deklarasi Audio
 const sBenar = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg'); 
 const sSalah = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
 
@@ -560,7 +580,7 @@ const superlativeQuestions = [
     { q: "He is The ... person I know; he always makes me laugh.", options: ["Most funny", "Funniest", "Funnyest", "Funnier"], a: 1 }
 ];
 
-// --- SISTEM PENYELAMAT DATA ---
+// --- SISTEM NAVIGASI & PENYELAMAT DATA ---
 window.onload = function() {
     const savedName = localStorage.getItem('studentName');
     const examStatus = localStorage.getItem('examStatus');
@@ -568,11 +588,13 @@ window.onload = function() {
     const lastType = localStorage.getItem('currentQuizType') || 'comparative';
 
     if (savedName) {
+        // Jika sudah login, sembunyikan Welcome & Login
+        document.getElementById('welcome-section')?.classList.add('hidden');
         document.getElementById('login-section').classList.add('hidden');
         document.getElementById('displayName').innerText = savedName;
 
         if (examStatus === 'on-progress') {
-            if(lastType === 'final') prepareFinalBoss(); // Siapkan soal jika refresh di boss
+            if(lastType === 'final') prepareFinalBoss(); 
             startRealQuiz(lastType);
             alert("Melanjutkan ujian yang belum selesai...");
         } else if (currentPage === 'comparative') {
@@ -585,6 +607,13 @@ window.onload = function() {
         }
     }
 };
+
+// Fungsi pindah dari Welcome ke Login
+function goToLogin() {
+    document.getElementById('welcome-section').classList.add('hidden');
+    document.getElementById('login-section').classList.remove('hidden');
+    window.scrollTo(0,0);
+}
 
 function startMission() {
     const name = document.getElementById('studentName').value;
@@ -601,12 +630,13 @@ function startMission() {
 }
 
 function showMaterialPage(name) {
+    document.getElementById('welcome-section')?.classList.add('hidden');
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.remove('hidden');
     document.getElementById('chapter-menu-page').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('superlative-page').classList.add('hidden'); 
-    document.getElementById('tips-page')?.classList.add('hidden'); // Sembunyikan tips jika ada
+    document.getElementById('tips-page')?.classList.add('hidden');
     document.getElementById('displayName').innerText = name;
 
     const savedSchool = localStorage.getItem('schoolName');
@@ -659,7 +689,10 @@ function backToChapterMenu() {
 
 function logout() {
     localStorage.clear(); 
-    location.reload();
+    // Kembali ke Welcome Page saat logout
+    document.querySelectorAll('.card').forEach(card => card.classList.add('hidden'));
+    document.getElementById('welcome-section').classList.remove('hidden');
+    location.reload(); 
 }
 
 // 4. Logika Game Matching
@@ -702,10 +735,8 @@ function selectWord(btn, type) {
 function markExamAsStarted() { localStorage.setItem('examStatus', 'on-progress'); }
 function markExamAsFinished() { localStorage.removeItem('examStatus'); }
 
-// FUNGSI BARU: ACAK SOAL FINAL BOSS
 function prepareFinalBoss() {
     const combined = [...questions, ...superlativeQuestions];
-    // Acak semua soal
     finalBossQuestions = combined.sort(() => Math.random() - 0.5).slice(0, 10);
 }
 
@@ -714,7 +745,6 @@ function startRealQuiz(type = 'comparative') {
     currentQuizType = type; 
     localStorage.setItem('currentQuizType', type);
 
-    // Pilih data soal
     let activeQuestions;
     if (type === 'superlative') {
         activeQuestions = superlativeQuestions;
@@ -727,7 +757,6 @@ function startRealQuiz(type = 'comparative') {
     userAnswers = {};
     localStorage.removeItem('savedAnswers');
 
-    // UI Logic
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.add('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
@@ -736,7 +765,6 @@ function startRealQuiz(type = 'comparative') {
     document.getElementById('game-overlay').classList.add('hidden');
     document.getElementById('quiz-page').classList.remove('hidden');
     
-    // Judul Dinamis
     let quizTitle = "EXAM: COMPARATIVE";
     if(type === 'superlative') quizTitle = "EXAM: SUPERLATIVE";
     if(type === 'final') quizTitle = "🔥 FINAL BOSS: MIXED 🔥";
@@ -749,7 +777,6 @@ function startRealQuiz(type = 'comparative') {
         const qDiv = document.createElement('div');
         qDiv.style.cssText = "margin-bottom: 30px; padding: 20px; border-radius: 12px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;";
         
-        // Hapus nomor lama dari string agar tidak dobel nomor
         const cleanText = q.q.replace(/^\d+\.\s*/, '');
         qDiv.innerHTML = `<p style="font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; color: #2c3e50;">${qIdx + 1}. ${cleanText}</p>`;
         
@@ -823,7 +850,6 @@ function submitScrollQuiz() {
             finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
             finishBtn.onclick = function() { location.reload(); };
         } else if (currentQuizType === 'superlative') {
-            // ALUR BARU: MASUK KE TIPS
             finishBtn.innerText = "⚡ LIHAT TIPS FINAL BOSS";
             finishBtn.onclick = function() { showTipsPage(); };
         } else {
@@ -851,14 +877,12 @@ function submitScrollQuiz() {
     window.scrollTo(0, 0);
 }
 
-// FUNGSI BARU: HALAMAN TIPS
 function showTipsPage() {
     document.getElementById('result-page').classList.add('hidden');
     document.getElementById('tips-page').classList.remove('hidden');
     window.scrollTo(0,0);
 }
 
-// FUNGSI BARU: MULAI FINAL BOSS
 function startFinalBoss() {
     prepareFinalBoss();
     startRealQuiz('final');
@@ -893,7 +917,6 @@ function backToMenuFromB() {
     document.getElementById('superlative-page').classList.add('hidden');
     document.getElementById('chapter-menu-page').classList.remove('hidden');
 }
-    
 </script>
 
 </body>
