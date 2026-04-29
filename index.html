@@ -18,7 +18,7 @@
         /* --- BACKGROUND DIPERINDAH --- */
         body { 
             font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #f4f7f6 0%, #e8ecef 100%); /* Efek gradien lembut */
+            background: linear-gradient(135deg, #f4f7f6 0%, #e8ecef 100%); 
             color: var(--text-color); 
             padding: 20px; 
             display: flex; 
@@ -33,7 +33,7 @@
             background: var(--card-bg); 
             border-radius: 16px; 
             padding: 30px; 
-            box-shadow: 0 12px 35px rgba(0,0,0,0.06); /* Bayangan lebih halus */
+            box-shadow: 0 12px 35px rgba(0,0,0,0.06); 
             margin-bottom: 20px; 
             border: 1px solid rgba(255,255,255,0.5);
         }
@@ -56,7 +56,7 @@
         }
         input:focus, select:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 10px rgba(52, 152, 219, 0.15); /* Efek glow saat diketik */
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.15); 
             outline: none;
             background-color: #fff;
         }
@@ -67,7 +67,7 @@
         .btn-primary { 
             width: 100%; 
             padding: 16px; 
-            background: linear-gradient(135deg, var(--primary-color), #2980b9); /* Gradien */
+            background: linear-gradient(135deg, var(--primary-color), #2980b9); 
             color: white; 
             border: none; 
             border-radius: 12px; 
@@ -79,7 +79,7 @@
             transition: all 0.3s ease; 
         }
         .btn-primary:hover {
-            transform: translateY(-2px); /* Efek terangkat */
+            transform: translateY(-2px); 
             box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4);
         }
         
@@ -99,7 +99,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.03);
         }
         .unlocked:hover {
-            transform: translateY(-3px); /* Efek mengambang */
+            transform: translateY(-3px); 
             box-shadow: 0 10px 20px rgba(46, 204, 113, 0.15);
         }
         .locked { 
@@ -111,14 +111,14 @@
         }
         
         .btn-back { background: none; border: none; color: var(--primary-color); cursor: pointer; font-weight: 600; margin-bottom: 15px; font-family: 'Poppins'; padding: 0; transition: 0.2s;}
-        .btn-back:hover { color: #2980b9; transform: translateX(-5px); } /* Efek geser panah */
+        .btn-back:hover { color: #2980b9; transform: translateX(-5px); } 
 
         /* --- TABEL LEBIH RAPI & MODERN --- */
         table { 
             width: 100%; 
             border-collapse: collapse; 
             margin-bottom: 25px; 
-            border-radius: 10px; /* Sudut melengkung */
+            border-radius: 10px; 
             overflow: hidden; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
@@ -126,7 +126,7 @@
         th { border: none; font-weight: 600;}
         td { border-bottom: 1px solid #ecf0f1; background: #fff;}
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background-color: #fcfcfc; } /* Highlight baris */
+        tr:hover td { background-color: #fcfcfc; } 
 
         /* --- GAME MATCHING --- */
         .game-container {
@@ -166,13 +166,14 @@
     <h1>EQUATOR</h1>
     <p class="subtitle">
         English Quick & Active Tutor<br>
-        <span style="font-weight: 600; color: var(--primary-color); font-size: 1.1rem; letter-spacing: 0.5px;">[NAMA SEKOLAH ANDA]</span>
+        <span id="headerSchoolName" style="font-weight: 600; color: var(--primary-color); font-size: 1.1rem; letter-spacing: 0.5px;">Sekolah Menengah Pertama</span>
     </p>
 
     <div id="login-section" class="card">
         <h2 style="font-size: 1.3rem; margin-bottom: 20px; color: var(--text-color);">Mulai Petualanganmu!</h2>
         <input type="text" id="studentName" placeholder="Masukkan Nama Lengkap">
         <input type="email" id="studentEmail" placeholder="Masukkan Email Siswa">
+        <input type="text" id="schoolName" placeholder="Masukkan Nama Sekolah">
         
         <label for="classSelect">Pilih Kelas:</label>
         <select id="classSelect">
@@ -185,7 +186,9 @@
     </div>
 
     <div id="material-section" class="card hidden">
-        <h2>Halo, <span id="displayName" style="color: var(--primary-color);"></span>! 👋</h2>
+        <h2 style="margin-bottom: 5px;">Halo, <span id="displayName" style="color: var(--primary-color);"></span>! 👋</h2>
+        <p style="text-align: center; margin-top: 0; margin-bottom: 25px; color: #7f8c8d; font-weight: 600;">🏫 <span id="displaySchool"></span></p>
+        
         <p style="margin-bottom: 25px; color: #7f8c8d;">Silahkan pilih materi belajarmu hari ini:</p>
         
         <div class="level-box unlocked" onclick="goToComparative()">
@@ -381,52 +384,59 @@ window.onload = function() {
     const currentPage = localStorage.getItem('currentPage');
 
     if (savedName) {
-        // Sembunyikan form login jika sudah ada nama
         document.getElementById('login-section').classList.add('hidden');
         document.getElementById('displayName').innerText = savedName;
 
         if (examStatus === 'on-progress') {
-            // Jika sedang ujian, langsung ke kuis
             startRealQuiz();
             alert("Melanjutkan ujian yang belum selesai...");
         } else if (currentPage === 'comparative') {
-            // Jika tadi sedang baca materi
             goToComparative();
         } else {
-            // Jika di menu utama
             showMaterialPage(savedName);
         }
     }
 };
 
-// 3. Logika Navigasi
+// 3. Logika Navigasi (DIPERBARUI)
 function startMission() {
     const name = document.getElementById('studentName').value;
     const email = document.getElementById('studentEmail').value;
-    if (name.trim() !== "" && email.trim() !== "") {
+    const school = document.getElementById('schoolName').value; // Ambil nilai sekolah
+    
+    if (name.trim() !== "" && email.trim() !== "" && school.trim() !== "") {
         localStorage.setItem('studentName', name); 
+        localStorage.setItem('schoolName', school); // Simpan sekolah
         showMaterialPage(name);
     } else {
-        alert("Mohon isi Nama dan Email terlebih dahulu ya!");
+        alert("Mohon isi Nama, Email, dan Nama Sekolah terlebih dahulu ya!");
     }
 }
 
+// FUNGSI INI KINI MENGATUR TAMPILAN SEKOLAH JUGA
 function showMaterialPage(name) {
     document.getElementById('login-section').classList.add('hidden');
     document.getElementById('material-section').classList.remove('hidden');
     document.getElementById('comparative-page').classList.add('hidden');
     document.getElementById('displayName').innerText = name;
 
+    // Ambil data sekolah dari LocalStorage & ubah teks di HTML
+    const savedSchool = localStorage.getItem('schoolName');
+    if (savedSchool) {
+        document.getElementById('displaySchool').innerText = savedSchool;
+        document.getElementById('headerSchoolName').innerText = savedSchool;
+    }
+
     // Cek apakah Level B sudah terbuka
     const isLevelBUnlocked = localStorage.getItem('levelB_unlocked');
-    const levelBBox = document.getElementById('level-b-box'); // Kita beri ID nanti
+    const levelBBox = document.getElementById('level-b-box'); 
 
     if (isLevelBUnlocked === 'true') {
         levelBBox.classList.remove('locked');
         levelBBox.classList.add('unlocked');
         levelBBox.innerHTML = `<h3 style="margin-top:0; margin-bottom:5px;">🔓 Level B: Superlative</h3>
                                <p style="margin:0; font-size:0.9rem; color:#555;">Belajar membandingkan TIGA hal atau lebih (Paling...)</p>`;
-        levelBBox.onclick = function() { goToSuperlative(); }; // Arahkan ke fungsi baru
+        levelBBox.onclick = function() { goToSuperlative(); }; 
     }
 }
 
@@ -443,7 +453,7 @@ function backToMenu() {
 }
 
 function logout() {
-    localStorage.clear(); // Ini akan menghapus semua termasuk savedAnswers
+    localStorage.clear(); 
     location.reload();
 }
 
@@ -507,7 +517,6 @@ function startRealQuiz() {
 
     questions.forEach((q, qIdx) => {
         const qDiv = document.createElement('div');
-        // Sedikit perbaikan style untuk kuis agar cocok dengan tema baru
         qDiv.style.cssText = "margin-bottom: 30px; padding: 20px; border-radius: 12px; background: #fff; box-shadow: 0 5px 15px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;";
         qDiv.innerHTML = `<p style="font-weight: 600; font-size: 1.05rem; margin-bottom: 15px; color: #2c3e50;">${q.q}</p>`;
         
@@ -521,11 +530,10 @@ function startRealQuiz() {
             btn.innerText = opt;
             btn.id = `q${qIdx}o${oIdx}`;
             
-            // Hover effect (ditambahkan lewat event listener js karena inline css hover rumit)
             btn.onmouseover = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#3498db"; }
             btn.onmouseout = function() { if(userAnswers[qIdx] !== oIdx) this.style.borderColor = "#eaeded"; }
 
-            // LOGIKA RESTORE: Jika index ini pernah dipilih, warnai biru langsung
+            // LOGIKA RESTORE
             if (userAnswers[qIdx] === oIdx) {
                 btn.style.backgroundColor = "#e3f2fd";
                 btn.style.color = "#2980b9";
@@ -542,7 +550,6 @@ function startRealQuiz() {
 }
 
 function selectOption(qIdx, oIdx) {
-    // Reset warna tombol lain di soal yang sama
     questions[qIdx].options.forEach((_, i) => {
         const el = document.getElementById(`q${qIdx}o${i}`);
         el.style.backgroundColor = "white"; 
@@ -551,17 +558,13 @@ function selectOption(qIdx, oIdx) {
         el.style.fontWeight = "normal";
     });
 
-    // Tandai tombol yang dipilih
     const selectedBtn = document.getElementById(`q${qIdx}o${oIdx}`);
     selectedBtn.style.backgroundColor = "#e3f2fd"; 
     selectedBtn.style.color = "#2980b9"; 
     selectedBtn.style.borderColor = "#3498db";
     selectedBtn.style.fontWeight = "600";
 
-    // Simpan ke variabel global
     userAnswers[qIdx] = oIdx;
-
-    // SIMPAN KE LOCALSTORAGE (Agar tidak hilang saat refresh)
     localStorage.setItem('savedAnswers', JSON.stringify(userAnswers));
 }
 
@@ -580,32 +583,27 @@ function submitScrollQuiz() {
         if (userAnswers[index] === q.a) finalScore += 10; 
     });
 
-    // AMBIL ELEMEN TOMBOL
     const finishBtn = document.getElementById('finish-btn');
 
     if (finalScore >= 70) {
-        // JIKA LULUS: Unlock Level B & Ubah Tombol
         localStorage.setItem('levelB_unlocked', 'true');
         sBenar.play();
 
         finishBtn.innerText = "🚀 LANJUT KE LEVEL B (SUPERLATIVE)";
-        finishBtn.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)"; // Warna Hijau
+        finishBtn.style.background = "linear-gradient(135deg, #2ecc71, #27ae60)"; 
         finishBtn.onclick = function() {
-            // Balik ke menu materi
             const name = localStorage.getItem('studentName');
             showMaterialPage(name); 
             document.getElementById('result-page').classList.add('hidden');
             window.scrollTo(0, 0);
         };
     } else {
-        // JIKA GAGAL: Tetap Ulangi
         sSalah.play();
         finishBtn.innerText = "Ulangi Petualangan";
         finishBtn.style.background = "linear-gradient(135deg, var(--primary-color), #2980b9)";
         finishBtn.onclick = function() { location.reload(); };
     }
 
-    // Tampilkan hasil
     document.getElementById('quiz-page').classList.add('hidden');
     document.getElementById('result-page').classList.remove('hidden');
     document.getElementById('final-score').innerText = finalScore;
@@ -618,26 +616,6 @@ function submitScrollQuiz() {
     
     userAnswers = {};
     window.scrollTo(0, 0);
-}
-
-// UPDATE FUNGSI INI JUGA AGAR GEMBOK TERBUKA SAAT DIKLIK "LANJUT"
-function showMaterialPage(name) {
-    document.getElementById('login-section').classList.add('hidden');
-    document.getElementById('material-section').classList.remove('hidden');
-    document.getElementById('comparative-page').classList.add('hidden');
-    document.getElementById('displayName').innerText = name;
-
-    // Cek localStorage apakah Level B sudah terbuka
-    if (localStorage.getItem('levelB_unlocked') === 'true') {
-        const bBox = document.getElementById('level-b-box');
-        bBox.classList.remove('locked');
-        bBox.classList.add('unlocked');
-        bBox.innerHTML = `<h3 style="margin-top:0; margin-bottom:5px;">🔓 Level B: Superlative</h3><p style="margin:0; font-size:0.9rem; color:#555;">Belajar membandingkan TIGA hal atau lebih (Paling...)</p>`;
-        bBox.onclick = function() { 
-            alert("Masuk ke Materi Superlative..."); 
-            // Tambahkan fungsi goToSuperlative() di sini nanti
-        };
-    }
 }
 
 function getRank(s) {
@@ -657,9 +635,8 @@ function getRank(s) {
     return ranks[s] || ranks[0];
 }
 
-    function goToSuperlative() {
+function goToSuperlative() {
     alert("Selamat! Kamu masuk ke Level B: Superlative. (Halaman materi sedang disiapkan)");
-    // Nanti di sini kamu bisa arahkan ke page baru seperti goToComparative()
 }
     
 </script>
